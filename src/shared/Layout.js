@@ -1,11 +1,20 @@
 import styled from 'styled-components';
 import theme from 'styles/Theme';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Layout({ children }) {
+  const navigate = useNavigate();
   return (
     <div>
       <StHeader>
-        <span>MBTI Comunity</span>
+        <Link to="/">
+          <StSpan>MBTI Comunity</StSpan>
+        </Link>
+        <Btns>
+          <button onClick={() => navigate('/login')}>LOGIN</button>
+          <button onClick={() => navigate('/join')}>JOIN</button>
+        </Btns>
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
@@ -23,7 +32,7 @@ const StHeader = styled.header`
   height: 50px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   color: white;
   margin: 30px 0px;
   font-size: 22px;
@@ -44,4 +53,15 @@ const StLayout = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 90vh;
+`;
+
+const Btns = styled.div`
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 20px;
+`;
+
+const StSpan = styled.span`
+  margin: 0px 20px;
 `;
