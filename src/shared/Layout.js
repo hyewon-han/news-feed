@@ -5,7 +5,7 @@ function Layout({ children }) {
   return (
     <div>
       <StHeader>
-        <span>MBIT Comunity</span>
+        <span>MBTI Comunity</span>
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
