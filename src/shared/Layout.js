@@ -34,7 +34,6 @@ const StHeader = styled.header`
   align-items: center;
   justify-content: space-between;
   color: white;
-  margin: 30px 0px;
   font-size: 22px;
 `;
 
