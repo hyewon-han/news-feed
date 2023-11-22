@@ -1,7 +1,68 @@
-import React from 'react';
+import Avatar from 'components/Avatar';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import defaultThumb from 'assets/default-thumb.jpeg';
+import theme from 'styles/Theme';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from 'firebase.js';
 
 function Detail() {
-  return <div>Detail</div>;
+  const feeds = useSelector((state) => state.feed);
+  const { id } = useParams();
+  const feed = feeds.find((feed) => feed.feedId === id);
+  const [userId, setUserId] = useState();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUserId(user?.uid);
+    });
+  }, []);
+  const users = useSelector((state) => state.user);
+  console.log(users);
+  const user = users.find((user) => user.userId === userId);
+  console.log(user);
+
+  return (
+    <Feed>
+      <AvatarAndTitle>
+        <Avatar />
+        <p>{feed.title}</p>
+      </AvatarAndTitle>
+      <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
+      <time>{feed.createAt}</time>
+      <StDiv>{feed.content}</StDiv>
+      <Avatar />
+      <span>{user?.name}</span>
+      <span>{user?.mbti}</span>
+      <form></form>
+    </Feed>
+  );
 }
 
 export default Detail;
+
+const Feed = styled.div`
+  background-color: whitesmoke;
+  width: 700px;
+  min-height: 500px;
+  margin: 20px 0px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const AvatarAndTitle = styled.header`
+  width: 100%;
+  height: 50px;
+  display: flex;
+`;
+
+const Thumbnail = styled.img`
+  width: 95%;
+  height: 300px;
+  margin: 20px auto;
+`;
+
+const StDiv = styled.div`
+  background-color: ${theme.color.orange};
+`;
