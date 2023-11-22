@@ -3,6 +3,7 @@ import { auth } from 'firebase.js';
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createUser } from 'redux/modules/user';
+import { useNavigate } from 'react-router-dom';
 
 function Join() {
   const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ function Join() {
   const [name, setName] = useState('');
   //const [userData, setUserData] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const selectRef = useRef();
 
@@ -55,6 +57,7 @@ function Join() {
       const userId = userCredential.user.uid;
       console.log('user', userCredential.user);
       createUserObj(userId);
+      navigate('/');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

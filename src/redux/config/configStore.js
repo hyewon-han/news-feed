@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from 'redux';
 import user from 'redux/modules/user';
+import feed from 'redux/modules/feed';
 
 const rootReducer = combineReducers({
-  user
+  user,
+  feed
 });
 const store = createStore(rootReducer);
 

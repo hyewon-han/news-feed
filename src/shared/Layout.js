@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from 'firebase.js';
 import Avatar from 'components/Avatar';
+import { useSelector } from 'react-redux';
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -20,6 +21,9 @@ function Layout({ children }) {
       setUserId(user?.uid);
     });
   }, []);
+  const users = useSelector((state) => state.user);
+  console.log(users);
+  const user = users.find((user) => user.userId === userId);
 
   const onClick = (event) => {
     //event.stopPropagation();
@@ -38,7 +42,10 @@ function Layout({ children }) {
         </Link>
         <Btns>
           {currentUser ? (
-            <Avatar onClick={onClick} />
+            <>
+              <Avatar onClick={onClick} />
+              <span>{user?.name}</span>
+            </>
           ) : (
             <>
               <button onClick={() => navigate('/login')}>LOGIN</button>
