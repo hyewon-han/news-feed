@@ -1,10 +1,12 @@
 const color = {
+  red: '#f94144',
+  orange: '#f3722c',
+  yellow: '#f9c74f',
+  green: '#90be6d',
+  blue: '#577590',
   black: '#252525',
   pink: '#d8737f',
-  blue: '#475c7a',
-  green: 'lightgreen',
-  purple: '#685d79',
-  yellow: '#fcbb6d'
+  purple: '#685d79'
 };
 
 const fontSize = {

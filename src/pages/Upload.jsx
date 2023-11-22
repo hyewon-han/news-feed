@@ -1,44 +1,100 @@
-import React, { useState } from 'react';
+import { auth } from 'firebase.js';
+import { onAuthStateChanged } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
+import { createFeed } from 'redux/modules/feed';
+import { useNavigate } from 'react-router-dom';
 
 function Upload() {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [file, setFile] = useState('')
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const feedId = uuidv4();
+  const [userId, setUserId] = useState(null);
+  const [image, setImage] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const onChangeTitle = (event) => {
-    setTitle(event.target.value)
-  }
-  const onChangeContent = (event) => {
-    setContent(event.target.value)
-  }
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log('user', user); // user 정보 없으면 null 표시
+      setUserId(user?.uid);
+    });
+  }, []);
 
-  const onChangeFile = (event) => {
-    setFile(event.target.value)
-  }
-  console.log(file)
+  const handleInputChange = (event) => {
+    const {
+      target: { value, name }
+    } = event;
+    if (name === 'title') setTitle(value);
+    if (name === 'content') setContent(value);
+  };
+  console.log(title, content, image);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // FileReader를 사용하여 이미지를 Base64로 변환
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'full',
+    timeStyle: 'short'
+  }).format(new Date());
+
+  const createFeedObj = (e) => {
+    e.preventDefault();
+    const feedObj = {
+      feedId,
+      title,
+      content,
+      userId,
+      createAt: formattedDate,
+      thumbImg: image
+    };
+    dispatch(createFeed(feedObj));
+    setTitle('');
+    setContent('');
+    navigate('/');
+  };
   return (
     <StPost>
       <StH1>게시글 작성하기</StH1>
-      <form name='posting' action='' method='post'>
-        <div>
-          <StTitle type='text' value={title} onChange={onChangeTitle} placeholder='제목을 입력해주세요.'></StTitle>
-        </div>
-        <div>
-          <StContent type='text' value={content} onChange={onChangeContent} placeholder='내용을 입력해주세요.'></StContent>
-        </div>
-        <div>
-          <StFile type='file' multiple value={file} onChange={onChangeFile}></StFile>
-          {/* <StFile type='file' id='postFiles' multiple></StFile> */}
-        </div>
-        <StBtn onClick={createPost}>게시글 작성</StBtn>
+      <form onSubmit={createFeedObj}>
+        <StTitle
+          name="title"
+          type="text"
+          placeholder="제목을 입력해주세요."
+          value={title}
+          onChange={handleInputChange}
+          required
+          maxLength={15}
+        />
+        <StContent
+          name="content"
+          type="text"
+          placeholder="내용을 입력해주세요."
+          value={content}
+          onChange={handleInputChange}
+          required
+          maxLength={80}
+        />
+        <StFile name="file" type="file" accept="image/*" onChange={handleFileChange} />
+        <StBtn>업로드</StBtn>
       </form>
     </StPost>
-  )
+  );
 }
 
 export default Upload;
+
 
 const StPost = styled.div`
   background-color: inherit;
