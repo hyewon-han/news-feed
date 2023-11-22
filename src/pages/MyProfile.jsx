@@ -6,8 +6,7 @@ import UserInfo from 'components/UserInfo';
 function MyProfile() {
   return (
     <ProfileBox>
-      게시글 박스
-      <UserInfo>유저 정보</UserInfo>
+      <UserInfo>유저 정보,작성한 게시물</UserInfo>
     </ProfileBox>
   );
 }
@@ -20,7 +19,7 @@ const ProfileBox = styled.div`
   align-items: center;
   background-color: ${theme.color.green};
   border: 1px solid ${theme.color.pink};
-  margin: 20px auto 10px auto;
+  margin: 20px auto 0 auto;
   width: 70%;
   height: 85%;
   min-width: 580px;

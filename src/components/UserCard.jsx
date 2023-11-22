@@ -8,10 +8,11 @@ export default function UserCard({ User }) {
     <LetterWrapper>
       <UserInfo>
         <AvataFigure>
-          <img src={User.avatar ?? defaultUser} alt="아바타이미지" /> //없으면 디폴트 유저사진
+          <img src={User.profileImg ?? defaultUser} alt="아바타이미지" /> //없으면 디폴트 유저사진
         </AvataFigure>
         <NicknameAndData>
-          <p>이름 :{User.nickname}</p>
+          <p>이름 :{User.userId}</p>
+          {/* 인펏으로바꾸고 토글 에딧프로필 누르면 인펏 활성화 버튼도 수정완료 버튼으로  */}
           <p>메일주소 :{User.email}</p>
           <p>MBTI :{User.mbti}</p>
         </NicknameAndData>
