@@ -2,9 +2,35 @@ import styled from 'styled-components';
 import theme from 'styles/Theme';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from 'firebase.js';
+import defaultUser from 'assets/default-img.jpeg';
+import Avatar from 'components/Avatar';
 
 function Layout({ children }) {
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isListVisible, setIsListVisible] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log('user', user); // user 정보 없으면 null 표시
+      setCurrentUser(user);
+      currentUser ? setUserId(user.uid) : setUserId(null);
+    });
+  }, []);
+
+  const onClick = (event) => {
+    //event.stopPropagation();
+    setIsListVisible(!isListVisible);
+  };
+  const logOut = async (event) => {
+    event.preventDefault();
+    setIsListVisible(false);
+    await signOut(auth);
+  };
   return (
     <div>
       <StHeader>
@@ -12,9 +38,26 @@ function Layout({ children }) {
           <StSpan>MBTI Comunity</StSpan>
         </Link>
         <Btns>
-          <button onClick={() => navigate('/login')}>LOGIN</button>
-          <button onClick={() => navigate('/join')}>JOIN</button>
+          {currentUser ? (
+            <Avatar onClick={onClick} />
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')}>LOGIN</button>
+              <button onClick={() => navigate('/join')}>JOIN</button>
+            </>
+          )}
         </Btns>
+        {isListVisible && (
+          <List onClick={(e) => e.stopPropagation()}>
+            <Link to={`/users/${userId}`}>
+              <li>My Profile</li>
+            </Link>
+            <Link to="upload">
+              <li>Upload Feed</li>
+            </Link>
+            <li onClick={logOut}>Log out</li>
+          </List>
+        )}
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
@@ -55,12 +98,23 @@ const StLayout = styled.div`
 `;
 
 const Btns = styled.div`
-  width: 120px;
+  width: 150px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: center;
   margin: 0px 20px;
 `;
 
 const StSpan = styled.span`
   margin: 0px 20px;
+`;
+
+const List = styled.ul`
+  position: absolute;
+  background-color: whitesmoke;
+  color: black;
+  right: 5%;
+  top: 5%;
+  padding: 10px;
+  border-radius: 10px;
 `;
