@@ -1,12 +1,15 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from 'firebase.js';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createUser } from 'redux/modules/user';
 
 function Join() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [userData, setUserData] = useState([]);
+  //const [userData, setUserData] = useState([]);
+  const dispatch = useDispatch();
 
   const selectRef = useRef();
 
@@ -29,7 +32,7 @@ function Join() {
     const selectedMbti = selectRef.current.value;
     return selectedMbti;
   };
-  const createUser = (userId) => {
+  const createUserObj = (userId) => {
     const userObj = {
       name,
       email,
@@ -37,12 +40,12 @@ function Join() {
       userId,
       mbti: selectMbti()
     };
-    setUserData((prev) => [userObj, ...prev]);
+    //setUserData((prev) => [userObj, ...prev]);
+    dispatch(createUser(userObj));
+    setName('');
+    setPassword('');
+    setEmail('');
   };
-
-  useEffect(() => {
-    console.log(userData);
-  }, [userData]);
 
   const signUp = async (event) => {
     event.preventDefault();
@@ -51,7 +54,7 @@ function Join() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
       console.log('user', userCredential.user);
-      createUser(userId);
+      createUserObj(userId);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

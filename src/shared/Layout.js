@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from 'firebase.js';
-import defaultUser from 'assets/default-img.jpeg';
 import Avatar from 'components/Avatar';
 
 function Layout({ children }) {
@@ -18,7 +17,7 @@ function Layout({ children }) {
     onAuthStateChanged(auth, (user) => {
       console.log('user', user); // user 정보 없으면 null 표시
       setCurrentUser(user);
-      currentUser ? setUserId(user.uid) : setUserId(null);
+      setUserId(user?.uid);
     });
   }, []);
 

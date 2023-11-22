@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
-import defaultUser from 'assets/default-img.jpeg';
+import defaultUser from 'assets/default-user.jpeg';
+import defaultThumb from 'assets/default-thumb.jpeg';
 import Avatar from 'components/Avatar';
 
 function Home() {
@@ -11,7 +12,7 @@ function Home() {
         <Avatar />
         <p>게시글 제목</p>
       </AvatarAndTitle>
-      <Thumbnail src={defaultUser} alt="이미지없음" />
+      <Thumbnail src={defaultThumb} alt="이미지없음" />
       <time>게시글 작성 시간</time>
       <StDiv>댓글 수 ( ) </StDiv>
     </Feed>

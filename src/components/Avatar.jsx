@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import defaultUser from 'assets/default-img.jpeg';
+import defaultUser from 'assets/default-user.jpeg';
 
 function Avatar({ src, size, onClick }) {
   return (
