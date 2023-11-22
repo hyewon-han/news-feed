@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
-
 import defaultThumb from 'assets/default-thumb.jpeg';
 import Avatar from 'components/Avatar';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { collection, getDocs, query } from 'firebase/firestore';
+import { db } from 'firebase.js';
 
 function Home() {
-  const feeds = useSelector((state) => state.feed);
-  console.log(feeds);
+  // const feeds = useSelector((state) => state.feed);
+
+  const [feeds, setFeeds] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const q = query(collection(db, 'feeds'));
+      const querySnapshot = await getDocs(q);
+      const initialFeeds = [];
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        console.log(doc.data());
+        // setFeeds([doc.data()]);
+        const data = {
+          id: doc.id,
+          ...doc.data()
+        };
+        initialFeeds.push(data);
+      });
+      setFeeds(initialFeeds);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(feeds);
+  }, [feeds]);
   return feeds.map((feed) => (
     <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
       <Feed>

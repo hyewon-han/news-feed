@@ -1,15 +1,15 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createUser } from 'redux/modules/user';
 import { useNavigate } from 'react-router-dom';
+import { collection, addDoc } from 'firebase/firestore';
 
 function Join() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  //const [userData, setUserData] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,16 +34,28 @@ function Join() {
     const selectedMbti = selectRef.current.value;
     return selectedMbti;
   };
-  const createUserObj = (userId) => {
-    const userObj = {
-      name,
-      email,
-      avatar: null,
-      userId,
-      mbti: selectMbti()
-    };
+  const createUserObj = async (userId) => {
+    try {
+      const docRef = await addDoc(collection(db, 'users'), {
+        name,
+        email,
+        avatar: null,
+        userId,
+        mbti: selectMbti()
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+    // const userObj = {
+    //   name,
+    //   email,
+    //   avatar: null,
+    //   userId,
+    //   mbti: selectMbti()
+    // };
     //setUserData((prev) => [userObj, ...prev]);
-    dispatch(createUser(userObj));
+    // dispatch(createUser(userObj));
     setName('');
     setPassword('');
     setEmail('');
@@ -51,7 +63,6 @@ function Join() {
 
   const signUp = async (event) => {
     event.preventDefault();
-
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
@@ -66,7 +77,7 @@ function Join() {
   };
   return (
     <div>
-      <form>
+      <form onSubmit={signUp}>
         <div>
           <label>이메일 : </label>
           <input type="email" value={email} name="email" onChange={onChange} required></input>
@@ -100,7 +111,7 @@ function Join() {
             <option value="esfp">ESFP</option>
           </select>
         </div>
-        <button onClick={signUp}>회원가입</button>
+        <button>회원가입</button>
       </form>
     </div>
   );

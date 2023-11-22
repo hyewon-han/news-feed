@@ -1,4 +1,4 @@
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import { onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { createFeed } from 'redux/modules/feed';
 import { useNavigate } from 'react-router-dom';
+import { addDoc, collection } from 'firebase/firestore';
 
 function Upload() {
   const [title, setTitle] = useState('');
@@ -49,17 +50,31 @@ function Upload() {
     timeStyle: 'short'
   }).format(new Date());
 
-  const createFeedObj = (e) => {
+  const createFeedObj = async (e) => {
     e.preventDefault();
-    const feedObj = {
-      feedId,
-      title,
-      content,
-      userId,
-      createAt: formattedDate,
-      thumbImg: image
-    };
-    dispatch(createFeed(feedObj));
+    try {
+      const docRef = await addDoc(collection(db, 'feeds'), {
+        feedId,
+        title,
+        content,
+        userId,
+        createAt: formattedDate,
+        thumbImg: image
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+
+    // const feedObj = {
+    //   feedId,
+    //   title,
+    //   content,
+    //   userId,
+    //   createAt: formattedDate,
+    //   thumbImg: image
+    // };
+    // dispatch(createFeed(feedObj));
     setTitle('');
     setContent('');
     navigate('/');
@@ -75,15 +90,7 @@ function Upload() {
         required
         maxLength={15}
       />
-      <textarea
-        name="content"
-        type="text"
-        placeholder="내용"
-        value={content}
-        onChange={handleInputChange}
-        required
-        maxLength={80}
-      />
+      <textarea name="content" type="text" placeholder="내용" value={content} onChange={handleInputChange} required />
       <input name="file" type="file" accept="image/*" onChange={handleFileChange} />
       <button>업로드</button>
     </StForm>
