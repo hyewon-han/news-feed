@@ -62,4 +62,5 @@ const Content = styled.button`
   padding: 12px;
   margin-left: 390px;
   white-space: nowrap;
+  cursor: pointer;
 `;
