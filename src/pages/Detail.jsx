@@ -6,22 +6,42 @@ import styled from 'styled-components';
 import defaultThumb from 'assets/default-thumb.jpeg';
 import theme from 'styles/Theme';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 function Detail() {
-  const feeds = useSelector((state) => state.feed);
+  // const feeds = useSelector((state) => state.feed);
   const { id } = useParams();
-  const feed = feeds.find((feed) => feed.feedId === id);
+  // const feed = feeds.find((feed) => feed.feedId === id);
   const [userId, setUserId] = useState();
+  const [feed, setFeed] = useState([]);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUserId(user?.uid);
     });
   }, []);
-  const users = useSelector((state) => state.user);
-  console.log(users);
-  const user = users.find((user) => user.userId === userId);
-  console.log(user);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const q = query(collection(db, 'feeds'), where('feedId', '==', id));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        setFeed(doc.data());
+      });
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(feed);
+  }, [feed]);
+
+  // const users = useSelector((state) => state.user);
+  // console.log(users);
+  // const user = users.find((user) => user.userId === userId);
+  // console.log(user);
 
   return (
     <Feed>
@@ -31,10 +51,10 @@ function Detail() {
       </AvatarAndTitle>
       <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
       <time>{feed.createAt}</time>
-      <StDiv>{feed.content}</StDiv>
+      <StTextarea value={feed.content} />
       <Avatar />
-      <span>{user?.name}</span>
-      <span>{user?.mbti}</span>
+      {/* <span>{user?.name}</span>
+      <span>{user?.mbti}</span> */}
       <form></form>
     </Feed>
   );
@@ -63,6 +83,6 @@ const Thumbnail = styled.img`
   margin: 20px auto;
 `;
 
-const StDiv = styled.div`
+const StTextarea = styled.textarea`
   background-color: ${theme.color.orange};
 `;

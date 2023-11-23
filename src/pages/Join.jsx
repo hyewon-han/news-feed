@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import { useDispatch } from 'react-redux';
 import { createUser } from 'redux/modules/user';
 import { useNavigate } from 'react-router-dom';
+import { collection, addDoc } from 'firebase/firestore';
 
 function Join() {
   const [email, setEmail] = useState('');
@@ -43,15 +44,26 @@ function Join() {
     return true;
   };
 
-  const createUserObj = (userId) => {
-    const userObj = {
-      name,
-      email,
-      avatar: null,
-      userId,
-      mbti: selectMbti()
-    };
-    dispatch(createUser(userObj));
+  const createUserObj = async (userId) => {
+    try {
+      const docRef = await addDoc(collection(db, 'users'), {
+        name,
+        email,
+        avatar: null,
+        userId,
+        mbti: selectMbti()
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+    // const user = auth.currentUser;
+
+    // if (user) {
+    //   user.updateProfile({
+    //     displayName: name
+    //   });
+    // }
     setName('');
     setPassword('');
     setConfirmPassword('');
@@ -84,6 +96,10 @@ function Join() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
       console.log('user', userCredential.user);
+      // const user = userCredential.user;
+      // user.updateProfile({
+      //   displayName: name
+      // });
       createUserObj(userId);
       navigate('/');
     } catch (error) {
@@ -95,7 +111,7 @@ function Join() {
 
   return (
     <div>
-      <form>
+      <form onSubmit={signUp}>
         <div>
           <h1>이메일 </h1>
           <input type="email" value={email} name="email" onChange={onChange} required />
@@ -138,7 +154,7 @@ function Join() {
             <option value="esfp">ESFP</option>
           </select>
         </div>
-        <button onClick={signUp}>회원가입</button>
+        <button>회원가입</button>
       </form>
     </div>
   );
