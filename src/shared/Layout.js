@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import Avatar from 'components/Avatar';
 import { useSelector } from 'react-redux';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 function Layout({ children }) {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [isListVisible, setIsListVisible] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState('');
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -21,9 +23,23 @@ function Layout({ children }) {
       setUserId(user?.uid);
     });
   }, []);
-  const users = useSelector((state) => state.user);
-  console.log(users);
-  const user = users.find((user) => user.userId === userId);
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('userId', userId);
+      const q = query(collection(db, 'users'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        console.log(doc.data());
+        setUser(doc.data());
+      });
+    };
+    if (userId) fetchData();
+  }, [userId]);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const onClick = (event) => {
     //event.stopPropagation();
@@ -32,6 +48,7 @@ function Layout({ children }) {
   const logOut = async (event) => {
     event.preventDefault();
     setIsListVisible(false);
+    setUser('');
     await signOut(auth);
   };
   return (
