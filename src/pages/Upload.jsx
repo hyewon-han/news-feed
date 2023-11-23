@@ -19,10 +19,7 @@ function Upload() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log('user', user); // user 정보 없으면 null 표시
-      setUserId(user?.uid);
-    });
+    setUserId(auth.currentUser.uid);
   }, []);
   useEffect(() => {
     const fetchData = async () => {
