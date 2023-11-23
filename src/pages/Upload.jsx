@@ -21,6 +21,7 @@ function Upload() {
   useEffect(() => {
     setUserId(auth.currentUser.uid);
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       console.log('userId', userId);

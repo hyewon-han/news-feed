@@ -34,10 +34,9 @@ function Detail() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(feed);
-  }, [feed]);
-
+  useEffect(() => {}, []);
+  console.log(feed.userId);
+  console.log(userId);
   // const users = useSelector((state) => state.user);
   // console.log(users);
   // const user = users.find((user) => user.userId === userId);
@@ -45,13 +44,16 @@ function Detail() {
 
   return (
     <Feed>
-      <AvatarAndTitle>
+      <Header>
         <Avatar />
+        <span>{feed.author}</span>
         <p>{feed.title}</p>
-      </AvatarAndTitle>
+      </Header>
+
       <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
       <time>{feed.createAt}</time>
-      <StTextarea value={feed.content} />
+      <StDiv>{feed.userId === userId ? <button>삭제</button> : null}</StDiv>
+      <StTextarea value={feed.content} disabled />
       <Avatar />
       {/* <span>{user?.name}</span>
       <span>{user?.mbti}</span> */}
@@ -71,7 +73,7 @@ const Feed = styled.div`
   flex-direction: column;
 `;
 
-const AvatarAndTitle = styled.header`
+const Header = styled.header`
   width: 100%;
   height: 50px;
   display: flex;
@@ -85,4 +87,9 @@ const Thumbnail = styled.img`
 
 const StTextarea = styled.textarea`
   background-color: ${theme.color.orange};
+`;
+
+const StDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
