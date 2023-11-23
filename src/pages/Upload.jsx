@@ -59,10 +59,10 @@ function Upload() {
       createAt: formattedDate,
       thumbImg: image
     };
-    dispatch(createFeed(feedObj));
-    setTitle('');
-    setContent('');
-    navigate('/');
+    // dispatch(createFeed(feedObj));
+    // setTitle('');
+    // setContent('');
+    // navigate('/');
   };
   return (
     <StPost>
