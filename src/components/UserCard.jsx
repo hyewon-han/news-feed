@@ -1,23 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
 
 export default function UserCard({ User }) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
   return (
     <LetterWrapper>
       <UserInfo>
-        <AvataFigure>
-          <img src={User.profileImg ?? defaultUser} alt="아바타이미지" /> //없으면 디폴트 유저사진
-        </AvataFigure>
+        <AvatarFigure>
+          <img src={User.profileImg ?? defaultUser} alt="Avatar image" />
+        </AvatarFigure>
         <NicknameAndData>
-          <p>이름 :{User.userId}</p>
-          {/* 인펏으로바꾸고 토글 에딧프로필 누르면 인펏 활성화 버튼도 수정완료 버튼으로  */}
-          <p>메일주소 :{User.email}</p>
-          <p>MBTI :{User.mbti}</p>
+          {isEditing ? (
+            <input type="text" value={User.userId} onChange={(e) => console.log(e.target.value)} />
+          ) : (
+            <p>이름: {User.userId}</p>
+          )}
+          {isEditing ? (
+            <input type="text" value={User.email} onChange={(e) => console.log(e.target.value)} />
+          ) : (
+            <p>이메일 주소: {User.email}</p>
+          )}
+          {isEditing ? (
+            <input type="text" value={User.mbti} onChange={(e) => console.log(e.target.value)} />
+          ) : (
+            <p>MBTI: {User.mbti}</p>
+          )}
         </NicknameAndData>
       </UserInfo>
-      <Content>{User.Content}Edit profile</Content>
+
+      {isEditing ? <></> : <EditProfile onClick={handleEditToggle}>Edit profile</EditProfile>}
+      {isEditing ? <EditProfile onClick={handleEditToggle}>수정완료 </EditProfile> : <></>}
+
+      <div style={{ display: isEditing ? 'none' : 'block' }}>{User.mbti}</div>
     </LetterWrapper>
   );
 }
@@ -37,7 +58,7 @@ const UserInfo = styled.div`
   flex-direction: center;
 `;
 
-const AvataFigure = styled.figure`
+const AvatarFigure = styled.figure`
   //figure태그안에는 이미 자식요소로 이미지 태그가있음
   width: 100px;
   height: 100px;
@@ -56,7 +77,7 @@ const NicknameAndData = styled.div`
   flex-direction: column;
 `;
 
-const Content = styled.button`
+const EditProfile = styled.button`
   border-radius: 12px;
   background-color: ${theme.color.pink};
   padding: 12px;

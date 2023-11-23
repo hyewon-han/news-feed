@@ -16,8 +16,8 @@ function UserInfo() {
       </ListWrapper>
       <ListWrapper2>
         내가쓴 게시글 목록
-        {fakeData2.map((content) => (
-          <ContentsCard content={content} />
+        {fakeData2.map((feed) => (
+          <ContentsCard feed={feed} />
         ))}
       </ListWrapper2>
     </>
