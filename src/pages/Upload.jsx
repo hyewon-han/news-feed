@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { createFeed } from 'redux/modules/feed';
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 function Upload() {
   const [title, setTitle] = useState('');
@@ -14,6 +14,7 @@ function Upload() {
   const feedId = uuidv4();
   const [userId, setUserId] = useState(null);
   const [image, setImage] = useState(null);
+  const [user, setUser] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,7 +24,24 @@ function Upload() {
       setUserId(user?.uid);
     });
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('userId', userId);
+      const q = query(collection(db, 'users'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        console.log(doc.data());
+        setUser(doc.data());
+      });
+    };
+    if (userId) fetchData();
+  }, [userId]);
+  // setUserId(auth.currentUser.uid);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   const handleInputChange = (event) => {
     const {
       target: { value, name }
@@ -59,7 +77,8 @@ function Upload() {
         content,
         userId,
         createAt: formattedDate,
-        thumbImg: image
+        thumbImg: image,
+        author: user.name
       });
       console.log('Document written with ID: ', docRef.id);
     } catch (e) {

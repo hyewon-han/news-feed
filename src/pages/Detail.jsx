@@ -51,7 +51,7 @@ function Detail() {
       </AvatarAndTitle>
       <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
       <time>{feed.createAt}</time>
-      <StDiv>{feed.content}</StDiv>
+      <StTextarea value={feed.content} />
       <Avatar />
       {/* <span>{user?.name}</span>
       <span>{user?.mbti}</span> */}
@@ -83,6 +83,6 @@ const Thumbnail = styled.img`
   margin: 20px auto;
 `;
 
-const StDiv = styled.div`
+const StTextarea = styled.textarea`
   background-color: ${theme.color.orange};
 `;

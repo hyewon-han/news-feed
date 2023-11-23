@@ -47,15 +47,13 @@ function Join() {
     } catch (e) {
       console.error('Error adding document: ', e);
     }
-    // const userObj = {
-    //   name,
-    //   email,
-    //   avatar: null,
-    //   userId,
-    //   mbti: selectMbti()
-    // };
-    //setUserData((prev) => [userObj, ...prev]);
-    // dispatch(createUser(userObj));
+    // const user = auth.currentUser;
+
+    // if (user) {
+    //   user.updateProfile({
+    //     displayName: name
+    //   });
+    // }
     setName('');
     setPassword('');
     setEmail('');
@@ -67,6 +65,10 @@ function Join() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
       console.log('user', userCredential.user);
+      // const user = userCredential.user;
+      // user.updateProfile({
+      //   displayName: name
+      // });
       createUserObj(userId);
       navigate('/');
     } catch (error) {
