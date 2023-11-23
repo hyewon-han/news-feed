@@ -161,6 +161,7 @@ const StContent = styled.textarea`
   font-size: 20px;
   padding: 10px;
   text-indent: 10px;
+  resize: none;
 `;
 
 const StFile = styled.input`
