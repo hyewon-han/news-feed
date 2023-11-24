@@ -10,9 +10,8 @@ import { auth, db } from 'firebase.js';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 function Detail() {
-  // const feeds = useSelector((state) => state.feed);
   const { id } = useParams();
-  // const feed = feeds.find((feed) => feed.feedId === id);
+
   const [userId, setUserId] = useState();
   const [feed, setFeed] = useState([]);
   useEffect(() => {
@@ -38,11 +37,6 @@ function Detail() {
     console.log(feed);
   }, [feed]);
 
-  // const users = useSelector((state) => state.user);
-  // console.log(users);
-  // const user = users.find((user) => user.userId === userId);
-  // console.log(user);
-
   return (
     <Feed>
       <AvatarAndTitle>
@@ -53,8 +47,7 @@ function Detail() {
       <time>{feed.createAt}</time>
       <StTextarea value={feed.content} />
       <Avatar />
-      {/* <span>{user?.name}</span>
-      <span>{user?.mbti}</span> */}
+
       <form></form>
     </Feed>
   );

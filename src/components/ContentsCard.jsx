@@ -9,7 +9,7 @@ export default function ContentsCard({ feed }) {
       <UserInfo>
         <NicknameAndData>
           <p>{feed.title}</p>
-          <img src={feed.thumbImg} />
+          <StyledImage src={feed.thumbImg} alt="Feed Image" />
 
           <p>{feed.content}</p>
           <p>{feed.date1}</p>
@@ -19,6 +19,10 @@ export default function ContentsCard({ feed }) {
   );
 }
 
+const StyledImage = styled.img`
+  max-width: 350px;
+  height: auto;
+`;
 const LetterWrapper = styled.li`
   display: flex;
   gap: 12px;
