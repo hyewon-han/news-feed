@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
+import { auth } from 'firebase.js';
 
 export default function UserCard({ User }) {
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    console.log(auth?.currentUser?.uid);
+  }, [auth]);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);

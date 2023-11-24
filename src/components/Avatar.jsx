@@ -36,4 +36,7 @@ const AvatarFigure = styled.figure`
     object-fit: cover;
     border-radius: 50%;
   }
+  &:hover {
+    cursor: pointer;
+  }
 `;

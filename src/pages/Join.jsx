@@ -45,25 +45,20 @@ function Join() {
   };
 
   const createUserObj = async (userId) => {
+    const userObj = {
+      name,
+      email,
+      avatar: null,
+      userId,
+      mbti: selectMbti()
+    };
     try {
-      const docRef = await addDoc(collection(db, 'users'), {
-        name,
-        email,
-        avatar: null,
-        userId,
-        mbti: selectMbti()
-      });
+      const docRef = await addDoc(collection(db, 'users'), userObj);
       console.log('Document written with ID: ', docRef.id);
     } catch (e) {
       console.error('Error adding document: ', e);
     }
-    // const user = auth.currentUser;
-
-    // if (user) {
-    //   user.updateProfile({
-    //     displayName: name
-    //   });
-    // }
+    dispatch(createUser(userObj));
     setName('');
     setPassword('');
     setConfirmPassword('');

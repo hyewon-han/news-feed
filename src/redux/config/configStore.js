@@ -1,4 +1,6 @@
 import { createStore, combineReducers } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import user from 'redux/modules/user';
 import feed from 'redux/modules/feed';
 
@@ -6,9 +8,18 @@ const rootReducer = combineReducers({
   user,
   feed
 });
-const store = createStore(rootReducer);
 
-export default store;
+const persistConfig = {
+  key: 'users', // 스토리지에 저장될 키
+  storage // 사용할 스토리지 (로컬 스토리지)
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = createStore(persistedReducer);
+const persistor = persistStore(store);
+
+export { store, persistor };
 
 const onChange = () => {
   console.log(store.getState());
