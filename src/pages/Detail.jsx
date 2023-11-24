@@ -7,7 +7,7 @@ import theme from 'styles/Theme';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from 'firebase.js';
 import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import { FaRegTrashAlt } from 'react-icons/fa';
+
 import Modal from 'components/Modal';
 
 function Detail() {
