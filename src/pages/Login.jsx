@@ -45,11 +45,11 @@ function Login() {
     <div>
       <form>
         <div>
-          <label htmlFor="email">이메일 : </label>
+          <p>반갑습니다</p>
+          <p>MBTI commyniy 입니다</p>
           <input id="email" type="email" value={email} name="email" onChange={onChange} required></input>
         </div>
         <div>
-          <label>비밀번호 : </label>
           <input type="password" value={password} name="password" onChange={onChange} required></input>
         </div>
         <button onClick={signIn}>로그인</button>
