@@ -41,7 +41,7 @@ function Home() {
       querySnapshot.forEach((doc) => {
         //console.log(`${doc.id} => ${doc.data()}`);
         const data = {
-          feedId: doc.id,
+          id: doc.id,
           ...doc.data()
         };
         initialFeeds.push(data);
@@ -50,7 +50,7 @@ function Home() {
     };
     fetchData();
   }, []);
-
+  console.log(feeds);
   // useEffect(() => {
   //   console.log(feeds);
   //   const result = feeds.forEach((feed) => users.find((user) => user.userId === feed.userId));

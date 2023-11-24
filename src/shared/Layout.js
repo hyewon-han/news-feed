@@ -55,7 +55,7 @@ function Layout({ children }) {
     <div>
       <StHeader>
         <Link to="/">
-          <StSpan>MBTI Comunity</StSpan>
+          <StSpan>MBTI Community</StSpan>
         </Link>
         <Btns>
           {currentUser ? (
@@ -84,7 +84,7 @@ function Layout({ children }) {
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
-        <span>Copyright &copy; MBTI Comunity All rights reserved</span>
+        <span>Copyright &copy; MBTI Community All rights reserved</span>
       </StFooter>
     </div>
   );
