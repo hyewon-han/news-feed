@@ -13,7 +13,7 @@ export default function ContentsCard({ feed }) {
           <StyledImage src={feed.thumbImg} alt="Feed Image" />
 
           <p>{feed.content}</p>
-          <p>{feed.date1}</p>
+          <p>{feed.createAt}</p>
         </NicknameAndData>
       </UserInfo>
     </LetterWrapper>
