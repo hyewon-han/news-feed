@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
 import UserInfo from 'components/UserInfo';
-
+import { auth, db } from 'firebase.js';
 function MyProfile() {
   return (
     <ProfileBox>
