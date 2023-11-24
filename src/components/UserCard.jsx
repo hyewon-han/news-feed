@@ -1,49 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
-export default function UserCard({ User }) {
+export default function UserCard({ user }) {
+  // const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [mbti, setMbti] = useState(user.mbti);
+
+  console.log(user);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const userDoc = await getDoc(doc(db, 'users', userId));
+
+  //       if (userDoc.exists()) {
+  //         setUser(userDoc.data());
+  //       } else {
+  //         console.log('User data not found in Firestore');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error.message);
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, [userId]);
 
   useEffect(() => {
     console.log(auth?.currentUser?.uid);
   }, [auth]);
 
   const handleEditToggle = () => {
+    // if (isEditing) {
+    //   const userRef = doc(asdasd, asdasd, user.id);
+    //   updateDoc(userRef, { ...user, mbti, email, name });
+    // }
     setIsEditing(!isEditing);
+  };
+
+  const handleInputChange = (e) => {
+    if (e.target.name === 'name') {
+      setName('name');
+    }
+    console.log(e.target.value);
   };
 
   return (
     <LetterWrapper>
       <UserInfo>
         <AvatarFigure>
-          <img src={User.profileImg ?? defaultUser} alt="Avatar image" />
+          <img src={user?.profileImg ?? defaultUser} alt="Avatar image" />
         </AvatarFigure>
         <NicknameAndData>
-          {isEditing ? (
-            <input type="text" value={User.userId} onChange={(e) => console.log(e.target.value)} />
-          ) : (
-            <p>이름: {User.userId}</p>
-          )}
-          {isEditing ? (
-            <input type="text" value={User.email} onChange={(e) => console.log(e.target.value)} />
-          ) : (
-            <p>이메일 주소: {User.email}</p>
-          )}
-          {isEditing ? (
-            <input type="text" value={User.mbti} onChange={(e) => console.log(e.target.value)} />
-          ) : (
-            <p>MBTI: {User.mbti}</p>
-          )}
+          {isEditing ? <input type="text" value={name} onChange={handleInputChange} /> : <p>이름: {user?.name}</p>}
+          {isEditing ? <input type="text" value={email} onChange={handleInputChange} /> : <p>이메일: {user?.email}</p>}
+          {isEditing ? <input type="text" value={mbti} onChange={handleInputChange} /> : <p>MBTI: {user?.mbti}</p>}
         </NicknameAndData>
       </UserInfo>
 
-      {isEditing ? <></> : <EditProfile onClick={handleEditToggle}>Edit profile</EditProfile>}
-      {isEditing ? <EditProfile onClick={handleEditToggle}>수정완료 </EditProfile> : <></>}
+      {isEditing ? (
+        <EditProfile onClick={handleEditToggle}>수정완료</EditProfile>
+      ) : (
+        <EditProfile onClick={handleEditToggle}>EditProfile</EditProfile>
+      )}
 
-      <div style={{ display: isEditing ? 'none' : 'block' }}>{User.mbti}</div>
+      <div style={{ display: isEditing ? 'none' : 'block' }}>{user?.mbti}</div>
     </LetterWrapper>
   );
 }

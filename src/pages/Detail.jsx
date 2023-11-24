@@ -11,9 +11,8 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import Modal from 'components/Modal';
 
 function Detail() {
-  // const feeds = useSelector((state) => state.feed);
   const { id } = useParams();
-  // const feed = feeds.find((feed) => feed.feedId === id);
+
   const [userId, setUserId] = useState();
   const [feed, setFeed] = useState([]);
   const [user, setUser] = useState('');
