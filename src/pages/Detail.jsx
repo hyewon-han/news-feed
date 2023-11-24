@@ -38,7 +38,7 @@ function Detail() {
       setUserId(user?.uid);
     });
   }, []);
-  //console.log(auth?.currentUser?.uid);
+
   useEffect(() => {
     const fetchData = async () => {
       console.log('userId', userId);
@@ -106,7 +106,7 @@ function Detail() {
   return (
     <Feed>
       <Header>
-        <Avatar />
+        <Avatar src={feed.authorImg} />
         <span>{feed.author}</span>
         <p>{feed.title}</p>
       </Header>

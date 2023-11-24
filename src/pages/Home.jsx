@@ -9,8 +9,6 @@ import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from 'firebase.js';
 
 function Home() {
-  // const feeds = useSelector((state) => state.feed);
-
   const [feeds, setFeeds] = useState([]);
   const [userId, setUserId] = useState(null);
   const [users, setUsers] = useState('');
@@ -57,15 +55,13 @@ function Home() {
   //   console.log(result);
   // }, [feeds]);
 
-  useEffect(() => {
-    console.log(users);
-  }, []);
+  console.log(users);
 
   return feeds.map((feed) => (
     <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
       <Feed>
         <AvatarAndTitle>
-          <Avatar />
+          <Avatar src={feed.authorImg} />
           <p>{feed.author}</p>
           <p>{feed.title}</p>
         </AvatarAndTitle>
