@@ -5,6 +5,7 @@ import UserCard from './UserCard';
 import ContentsCard from './ContentsCard';
 import { auth, db } from 'firebase.js';
 import { getDocs, collection, query, where } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 
 function UserInfo() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -47,7 +48,9 @@ function UserInfo() {
       <ListWrapper2>
         내가쓴 게시글 목록
         {userPosts.map((feed) => (
-          <ContentsCard key={feed.id} feed={feed} />
+          <Link to={`/feeds/${feed.feedId}`}>
+            <ContentsCard key={feed.id} feed={feed} />
+          </Link>
         ))}
       </ListWrapper2>
     </>

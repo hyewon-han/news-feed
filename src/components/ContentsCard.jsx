@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
+import { Link } from 'react-router-dom';
 
 export default function ContentsCard({ feed }) {
   return (

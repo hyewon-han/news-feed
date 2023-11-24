@@ -31,6 +31,10 @@ export default function UserCard({ user }) {
   //   fetchUserData();
   // }, [userId]);
 
+  useEffect(() => {
+    console.log(auth?.currentUser?.uid);
+  }, [auth]);
+
   const handleEditToggle = () => {
     // if (isEditing) {
     //   const userRef = doc(asdasd, asdasd, user.id);

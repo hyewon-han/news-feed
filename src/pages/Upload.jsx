@@ -13,7 +13,7 @@ function Upload() {
   const [content, setContent] = useState('');
   const feedId = uuidv4();
   const [userId, setUserId] = useState(null);
-  const [image, setImage] = useState(null);
+  const [thumbImg, setThumbImg] = useState(null);
   const [user, setUser] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ function Upload() {
   useEffect(() => {
     setUserId(auth.currentUser.uid);
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       console.log('userId', userId);
@@ -46,7 +47,7 @@ function Upload() {
     if (name === 'title') setTitle(value);
     if (name === 'content') setContent(value);
   };
-  console.log(title, content, image);
+  console.log(title, content, thumbImg);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -54,7 +55,7 @@ function Upload() {
       // FileReader를 사용하여 이미지를 Base64로 변환
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        setThumbImg(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -74,7 +75,7 @@ function Upload() {
         content,
         userId,
         createAt: formattedDate,
-        thumbImg: image,
+        thumbImg,
         author: user.name
       });
       console.log('Document written with ID: ', docRef.id);

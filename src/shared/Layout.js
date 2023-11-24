@@ -22,6 +22,8 @@ function Layout({ children }) {
       setCurrentUser(user);
       setUserId(user?.uid);
     });
+
+    document.addEventListener('click', () => setIsListVisible(false));
   }, []);
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +43,8 @@ function Layout({ children }) {
     console.log(user);
   }, [user]);
 
-  const onClick = (event) => {
-    //event.stopPropagation();
+  const handleClickAvatar = (e) => {
+    e.stopPropagation();
     setIsListVisible(!isListVisible);
   };
   const logOut = async (event) => {
@@ -55,12 +57,12 @@ function Layout({ children }) {
     <div>
       <StHeader>
         <Link to="/">
-          <StSpan>MBTI Comunity</StSpan>
+          <StSpan>MBTI Community</StSpan>
         </Link>
         <Btns>
           {currentUser ? (
             <>
-              <Avatar onClick={onClick} />
+              <Avatar onClick={handleClickAvatar} />
               <span>{user?.name}</span>
             </>
           ) : (
@@ -70,8 +72,8 @@ function Layout({ children }) {
             </>
           )}
         </Btns>
-        {isListVisible && (
-          <List onClick={(e) => e.stopPropagation()}>
+        {isListVisible ? (
+          <List>
             <Link to={`/users/${userId}`}>
               <li>My Profile</li>
             </Link>
@@ -80,11 +82,11 @@ function Layout({ children }) {
             </Link>
             <li onClick={logOut}>Log out</li>
           </List>
-        )}
+        ) : null}
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
-        <span>Copyright &copy; MBTI Comunity All rights reserved</span>
+        <span>Copyright &copy; MBTI Community All rights reserved</span>
       </StFooter>
     </div>
   );

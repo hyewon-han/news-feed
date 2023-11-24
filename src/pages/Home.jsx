@@ -5,7 +5,7 @@ import defaultThumb from 'assets/default-thumb.jpeg';
 import Avatar from 'components/Avatar';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from 'firebase.js';
 
 function Home() {
@@ -35,13 +35,13 @@ function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const q = query(collection(db, 'feeds'));
+      const q = query(collection(db, 'feeds'), orderBy('createAt', 'desc'));
       const querySnapshot = await getDocs(q);
       const initialFeeds = [];
       querySnapshot.forEach((doc) => {
         //console.log(`${doc.id} => ${doc.data()}`);
         const data = {
-          feedId: doc.id,
+          id: doc.id,
           ...doc.data()
         };
         initialFeeds.push(data);
@@ -50,7 +50,7 @@ function Home() {
     };
     fetchData();
   }, []);
-
+  console.log(feeds);
   // useEffect(() => {
   //   console.log(feeds);
   //   const result = feeds.forEach((feed) => users.find((user) => user.userId === feed.userId));
