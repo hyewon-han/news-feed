@@ -1,4 +1,4 @@
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import { onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -6,23 +6,40 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { createFeed } from 'redux/modules/feed';
 import { useNavigate } from 'react-router-dom';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 function Upload() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const feedId = uuidv4();
   const [userId, setUserId] = useState(null);
-  const [image, setImage] = useState(null);
+  const [thumbImg, setThumbImg] = useState(null);
+  const [user, setUser] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log('user', user); // user 정보 없으면 null 표시
-      setUserId(user?.uid);
-    });
+    setUserId(auth.currentUser.uid);
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('userId', userId);
+      const q = query(collection(db, 'users'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        console.log(doc.data());
+        setUser(doc.data());
+      });
+    };
+    if (userId) fetchData();
+  }, [userId]);
+  // setUserId(auth.currentUser.uid);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   const handleInputChange = (event) => {
     const {
       target: { value, name }
@@ -30,7 +47,7 @@ function Upload() {
     if (name === 'title') setTitle(value);
     if (name === 'content') setContent(value);
   };
-  console.log(title, content, image);
+  console.log(title, content, thumbImg);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -38,7 +55,7 @@ function Upload() {
       // FileReader를 사용하여 이미지를 Base64로 변환
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        setThumbImg(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -49,17 +66,32 @@ function Upload() {
     timeStyle: 'short'
   }).format(new Date());
 
-  const createFeedObj = (e) => {
+  const createFeedObj = async (e) => {
     e.preventDefault();
-    const feedObj = {
-      feedId,
-      title,
-      content,
-      userId,
-      createAt: formattedDate,
-      thumbImg: image
-    };
-    dispatch(createFeed(feedObj));
+    try {
+      const docRef = await addDoc(collection(db, 'feeds'), {
+        feedId,
+        title,
+        content,
+        userId,
+        createAt: formattedDate,
+        thumbImg,
+        author: user.name
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+
+    // const feedObj = {
+    //   feedId,
+    //   title,
+    //   content,
+    //   userId,
+    //   createAt: formattedDate,
+    //   thumbImg: image
+    // };
+    // dispatch(createFeed(feedObj));
     setTitle('');
     setContent('');
     navigate('/');
@@ -95,13 +127,12 @@ function Upload() {
 
 export default Upload;
 
-
 const StPost = styled.div`
   background-color: inherit;
   width: 520px;
   height: 800px;
   text-align: center;
-`
+`;
 
 const StH1 = styled.h1`
   font-size: 50px;
@@ -109,7 +140,7 @@ const StH1 = styled.h1`
   color: #475c7a;
   margin-top: 50px;
   margin-bottom: 20px;
-`
+`;
 
 const StTitle = styled.input`
   width: 500px;
@@ -120,7 +151,7 @@ const StTitle = styled.input`
   font-size: 20px;
   padding: 10px;
   text-indent: 10px;
-`
+`;
 
 const StContent = styled.textarea`
   width: 500px;
@@ -132,7 +163,7 @@ const StContent = styled.textarea`
   padding: 10px;
   text-indent: 10px;
   resize: none;
-`
+`;
 
 const StFile = styled.input`
   width: 500px;
@@ -146,7 +177,7 @@ const StFile = styled.input`
   line-height: 50px;
   vertical-align: middle;
   cursor: pointer;
-`
+`;
 
 const StBtn = styled.button`
   width: 150px;
@@ -160,4 +191,4 @@ const StBtn = styled.button`
   padding: 10px;
   float: right;
   cursor: pointer;
-`
+`;

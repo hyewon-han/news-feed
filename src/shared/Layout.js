@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from 'firebase.js';
+import { auth, db } from 'firebase.js';
 import Avatar from 'components/Avatar';
 import { useSelector } from 'react-redux';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 function Layout({ children }) {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [isListVisible, setIsListVisible] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState('');
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -20,30 +22,47 @@ function Layout({ children }) {
       setCurrentUser(user);
       setUserId(user?.uid);
     });
-  }, []);
-  const users = useSelector((state) => state.user);
-  console.log(users);
-  const user = users.find((user) => user.userId === userId);
 
-  const onClick = (event) => {
-    //event.stopPropagation();
+    document.addEventListener('click', () => setIsListVisible(false));
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('userId', userId);
+      const q = query(collection(db, 'users'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        console.log(doc.data());
+        setUser(doc.data());
+      });
+    };
+    if (userId) fetchData();
+  }, [userId]);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+  const handleClickAvatar = (e) => {
+    e.stopPropagation();
     setIsListVisible(!isListVisible);
   };
   const logOut = async (event) => {
     event.preventDefault();
     setIsListVisible(false);
+    setUser('');
     await signOut(auth);
   };
   return (
     <div>
       <StHeader>
         <Link to="/">
-          <StSpan>MBTI Comunity</StSpan>
+          <StSpan>MBTI Community</StSpan>
         </Link>
         <Btns>
           {currentUser ? (
             <>
-              <Avatar onClick={onClick} />
+              <Avatar onClick={handleClickAvatar} />
               <span>{user?.name}</span>
             </>
           ) : (
@@ -53,8 +72,8 @@ function Layout({ children }) {
             </>
           )}
         </Btns>
-        {isListVisible && (
-          <List onClick={(e) => e.stopPropagation()}>
+        {isListVisible ? (
+          <List>
             <Link to={`/users/${userId}`}>
               <li>My Profile</li>
             </Link>
@@ -63,11 +82,11 @@ function Layout({ children }) {
             </Link>
             <li onClick={logOut}>Log out</li>
           </List>
-        )}
+        ) : null}
       </StHeader>
       <StLayout>{children}</StLayout>
       <StFooter>
-        <span>Copyright &copy; MBTI Comunity All rights reserved</span>
+        <span>Copyright &copy; MBTI Community All rights reserved</span>
       </StFooter>
     </div>
   );
