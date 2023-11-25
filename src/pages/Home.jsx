@@ -47,9 +47,6 @@ function Home() {
     };
     fetchData();
   }, []);
-  console.log(feeds);
-
-  console.log(users);
 
   return feeds.map((feed) => (
     <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
@@ -61,7 +58,7 @@ function Home() {
         </AvatarAndTitle>
         <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
         <time>{feed.createAt}</time>
-        <StDiv>댓글 수 ( ) </StDiv>
+        <StDiv>댓글 수{feed.comments?.length}</StDiv>
       </Feed>
     </Link>
   ));

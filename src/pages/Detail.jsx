@@ -17,7 +17,7 @@ function Detail() {
   const [feed, setFeed] = useState('');
   const [user, setUser] = useState('');
   const [comment, setComment] = useState('');
-  const [feedData, setFeedData] = useState('');
+
   const userId = useSelector((state) => state.user);
   const commentId = uuidv4();
 
@@ -36,7 +36,6 @@ function Detail() {
           if (feedSnapshot.docs.length > 0) {
             const feedData = { id: feedSnapshot.docs[0].id, ...feedSnapshot.docs[0].data() };
             setFeed(feedData);
-            setFeedData(feedData);
           }
         }
       } catch (error) {
@@ -46,9 +45,10 @@ function Detail() {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   setFeed(feedData);
-  // }, [feedData]);
+  const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'full',
+    timeStyle: 'short'
+  }).format(new Date());
 
   const createComment = async (e) => {
     e.preventDefault();
@@ -62,7 +62,8 @@ function Detail() {
           writerMbti: user.mbti,
           writerAvatar: user.avatar,
           writerId: user.userId,
-          commentId
+          commentId,
+          date: formattedDate
         }
       ]
     });
@@ -104,6 +105,7 @@ function Detail() {
               <span>{item.writer}</span>
               <span>{item.writerMbti}</span>
               <span>{item.comment}</span>
+              <span>{item.date}</span>
               {item.writerId === user.userId ? (
                 <button onClick={() => deleteComment(item.commentId)}>삭제</button>
               ) : null}
