@@ -55,14 +55,14 @@ function DeleteUpdate({ feed, userId }) {
       {feed.userId === userId ? (
         <>
           <Button onClick={deleteFeed}>삭제</Button>
-          <button onClick={openModal}>수정</button>
+          <Button onClick={openModal}>수정</Button>
           <Modal isOpen={isModalOpen} onClose={closeModal}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} />
             <textarea value={content} onChange={(e) => setContent(e.target.value)} />
             <input type="file" accept="image/*" onChange={handleFileChange} />
             <div>
-              <button onClick={updateFeed}>수정완료</button>
-              <button onClick={closeModal}>취소</button>
+              <Button onClick={updateFeed}>수정완료</Button>
+              <Button onClick={closeModal}>취소</Button>
             </div>
           </Modal>
         </>

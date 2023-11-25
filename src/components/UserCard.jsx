@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import defaultUser from 'assets/default-user.jpeg';
 import theme from 'styles/Theme';
 import { auth, db } from 'firebase.js';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import Avatar from './Avatar';
 import { useParams } from 'react-router-dom';
+import Button from './Button';
 
 export default function UserCard({ user }) {
   // const [user, setUser] = useState(null);
@@ -19,25 +19,6 @@ export default function UserCard({ user }) {
     setMbti(selectRef.current.value);
     return selectRef.current.value;
   };
-
-  console.log(user.id);
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userDoc = await getDoc(doc(db, 'users', userId));
-
-  //       if (userDoc.exists()) {
-  //         setUser(userDoc.data());
-  //       } else {
-  //         console.log('User data not found in Firestore');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error.message);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [userId]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -102,12 +83,17 @@ export default function UserCard({ user }) {
 
       {isEditing ? (
         <>
-          {' '}
-          <EditProfile onClick={updateUser}>수정완료</EditProfile>
-          <EditProfile onClick={() => setIsEditing(false)}>취소</EditProfile>
+          <Btns>
+            <Button onClick={updateUser}>수정완료</Button>
+            <Button onClick={() => setIsEditing(false)}>취소</Button>
+          </Btns>
         </>
       ) : (
-        <EditProfile onClick={() => setIsEditing(true)}>회원정보 수정</EditProfile>
+        <Btns>
+          <Button color="yellow" onClick={() => setIsEditing(true)}>
+            회원정보 수정
+          </Button>
+        </Btns>
       )}
     </LetterWrapper>
   );
@@ -141,4 +127,10 @@ const EditProfile = styled.button`
   margin-left: 390px;
   white-space: nowrap;
   cursor: pointer;
+`;
+
+const Btns = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
 `;

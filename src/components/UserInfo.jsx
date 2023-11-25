@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function UserInfo() {
-  //const [currentUser, setCurrentUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
   const user = useSelector((state) => state.user);
@@ -17,7 +16,6 @@ function UserInfo() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        //setCurrentUser(user);
         if (user) {
           const userQuery = query(collection(db, 'users'), where('userId', '==', user));
           const userSnapshot = await getDocs(userQuery);
@@ -43,28 +41,19 @@ function UserInfo() {
     <>
       {userData && <UserCard user={userData} />}
 
-      <ListWrapper2>
+      <ListWrapper>
         내가쓴 게시글 목록
         {userPosts.map((feed) => (
           <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
             <ContentsCard feed={feed} />
           </Link>
         ))}
-      </ListWrapper2>
+      </ListWrapper>
     </>
   );
 }
 
 const ListWrapper = styled.ul`
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 12px;
-  width: 500px;
-  border-radius: 12px;
-`;
-const ListWrapper2 = styled.ul`
   background-color: transparent;
   display: flex;
   flex-direction: column;

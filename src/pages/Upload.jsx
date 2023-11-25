@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createFeed } from 'redux/modules/feed';
 import { useNavigate } from 'react-router-dom';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import Button from 'components/Button';
 
 function Upload() {
   const [title, setTitle] = useState('');
@@ -35,7 +36,6 @@ function Upload() {
     };
     if (userId) fetchData();
   }, [userId]);
-  // setUserId(auth.currentUser.uid);
 
   useEffect(() => {
     console.log(user);
@@ -84,15 +84,6 @@ function Upload() {
       console.error('Error adding document: ', e);
     }
 
-    // const feedObj = {
-    //   feedId,
-    //   title,
-    //   content,
-    //   userId,
-    //   createAt: formattedDate,
-    //   thumbImg: image
-    // };
-    // dispatch(createFeed(feedObj));
     setTitle('');
     setContent('');
     navigate('/');
@@ -120,7 +111,9 @@ function Upload() {
           maxLength={80}
         />
         <StFile name="file" type="file" accept="image/*" onChange={handleFileChange} />
-        <StBtn>업로드</StBtn>
+        <Button size="large" color="yellow">
+          업로드
+        </Button>
       </form>
     </StPost>
   );

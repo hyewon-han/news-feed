@@ -2,17 +2,17 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import theme from 'styles/Theme';
 
-function Button({ value, onClick, color, size, children }) {
-  return <StBtn onClick={onClick}>{children}</StBtn>;
+function Button({ onClick, color, size, children }) {
+  return (
+    <StBtn onClick={onClick} color={color} size={size}>
+      {children}
+    </StBtn>
+  );
 }
 
 export default Button;
 
 const StBtn = styled.button`
-  height: 50px;
-  width: 100px;
-  border: none;
-  transition: all 0.2s ease-in-out;
   ${(props) => {
     switch (props.color) {
       case 'yellow':
@@ -31,15 +31,19 @@ const StBtn = styled.button`
       case 'large':
         return css`
           height: 50px;
-          width: 100px;
+          min-width: 100px;
+          max-width: 200px;
         `;
       default:
         return css`
           height: 40px;
-          width: 70px;
+          min-width: 70px;
+          max-width: 120px;
         `;
     }
   }}
+  border: none;
+  transition: all 0.2s ease-in-out;
   padding: 10px;
   border-radius: 10px;
   font-size: 18px;
