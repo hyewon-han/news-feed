@@ -79,10 +79,10 @@ function Login() {
         name: user.displayName,
         email: user.email,
         avatar: user.photoURL,
-        userId: user.uid,
-        mbti: null
+        userId: user.uid
       };
       const docRef = await addDoc(collection(db, 'users'), userObj);
+      navigate('/');
       console.log('Document written with ID: ', docRef.id);
     } catch (error) {
       console.error('Google Login Error:', error.message);

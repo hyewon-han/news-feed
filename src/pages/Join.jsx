@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from 'firebase.js';
 import { useDispatch } from 'react-redux';
-import { createUser } from 'redux/modules/user';
+import { logInUser } from 'redux/modules/user';
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -11,28 +11,19 @@ function Join() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState(''); // Added confirmPassword state
   const [name, setName] = useState('');
+  const [mbti, setMbti] = useState('');
   const [passwordError, setPasswordError] = useState(''); // Added passwordError state
   const [emailError, setEmailError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const selectRef = useRef();
-
   const onChange = (event) => {
     const { name, value } = event.target;
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      setPassword(value);
-    } else if (name === 'confirmPassword') {
-      setConfirmPassword(value);
-    } else if (name === 'name') {
-      setName(value);
-    }
-  };
-
-  const selectMbti = () => {
-    return selectRef.current.value;
+    if (name === 'email') setEmail(value);
+    else if (name === 'password') setPassword(value);
+    else if (name === 'confirmPassword') setConfirmPassword(value);
+    else if (name === 'name') setName(value);
+    else if (name === 'mbti') setMbti(value);
   };
 
   const validatePassword = () => {
@@ -44,13 +35,13 @@ function Join() {
     return true;
   };
 
-  const createUserObj = async (userId) => {
+  const createUser = async (userId) => {
     const userObj = {
       name,
       email,
       avatar: null,
       userId,
-      mbti: selectMbti()
+      mbti
     };
     try {
       const docRef = await addDoc(collection(db, 'users'), userObj);
@@ -58,7 +49,7 @@ function Join() {
     } catch (e) {
       console.error('Error adding document: ', e);
     }
-    dispatch(createUser(userObj));
+    dispatch(logInUser(userId));
     setName('');
     setPassword('');
     setConfirmPassword('');
@@ -91,11 +82,7 @@ function Join() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
       console.log('user', userCredential.user);
-      // const user = userCredential.user;
-      // user.updateProfile({
-      //   displayName: name
-      // });
-      createUserObj(userId);
+      createUser(userId);
       navigate('/');
     } catch (error) {
       const errorCode = error.code;
@@ -103,7 +90,6 @@ function Join() {
       console.log('error with signUp', errorCode, errorMessage);
     }
   };
-
   return (
     <div>
       <form onSubmit={signUp}>
@@ -127,26 +113,26 @@ function Join() {
         </div>
         <div>
           <h1 htmlFor="mbti">MBTI</h1>
-          <select id="mbti" onChange={selectMbti} ref={selectRef}>
-            <option value="" disabled hidden>
+          <select id="mbti" onChange={onChange} name="mbti">
+            <option value="" disabled>
               MBTI
             </option>
-            <option value="intj">INTJ</option>
-            <option value="intp">INTP</option>
-            <option value="entj">ENTJ</option>
-            <option value="entp">ENTP</option>
-            <option value="infj">INFJ</option>
-            <option value="infp">INFP</option>
-            <option value="enfj">ENFJ</option>
-            <option value="enfp">ENFP</option>
-            <option value="istj">ISTJ</option>
-            <option value="isfj">ISFJ</option>
-            <option value="estj">ESTJ</option>
-            <option value="esfj">ESFJ</option>
-            <option value="istp">ISTP</option>
-            <option value="isfp">ISFP</option>
-            <option value="estp">ESTP</option>
-            <option value="esfp">ESFP</option>
+            <option value="INTJ">INTJ</option>
+            <option value="INTP">INTP</option>
+            <option value="ENTJ">ENTJ</option>
+            <option value="ENTP">ENTP</option>
+            <option value="INFJ">INFJ</option>
+            <option value="INFP">INFP</option>
+            <option value="ENFJ">ENFJ</option>
+            <option value="ENFP">ENFP</option>
+            <option value="ISTJ">ISTJ</option>
+            <option value="ISFJ">ISFJ</option>
+            <option value="ESTJ">ESTJ</option>
+            <option value="ESFJ">ESFJ</option>
+            <option value="ISTP">ISTP</option>
+            <option value="ISFP">ISFP</option>
+            <option value="ESTP">ESTP</option>
+            <option value="ESFP">ESFP</option>
           </select>
         </div>
         <button>회원가입</button>

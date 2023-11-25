@@ -77,7 +77,9 @@ function Upload() {
         createAt: formattedDate,
         thumbImg,
         author: user.name,
-        authorImg: user.avatar
+        authorImg: user.avatar,
+        like: 0,
+        comments: []
       });
       console.log('Document written with ID: ', docRef.id);
     } catch (e) {

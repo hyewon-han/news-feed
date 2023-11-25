@@ -55,6 +55,7 @@ function Layout({ children }) {
     setUser('');
     dispatch(logOutUser());
     await signOut(auth);
+    navigate('/');
   };
   return (
     <div>

@@ -7,7 +7,6 @@ import Modal from './Modal';
 import Button from './Button';
 
 function DeleteUpdate({ feed, userId }) {
-  console.log(feed);
   const [title, setTitle] = useState(feed.title);
   const [content, setContent] = useState(feed.content);
   const [thumbImg, setThumbImg] = useState(null);
