@@ -22,9 +22,6 @@ function UserInfo() {
           const userQuery = query(collection(db, 'users'), where('userId', '==', user));
           const userSnapshot = await getDocs(userQuery);
 
-          // const userData = userSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          // setUserData(userData);
-
           if (userSnapshot.docs.length > 0) {
             const userData = { id: userSnapshot.docs[0].id, ...userSnapshot.docs[0].data() };
             setUserData(userData);

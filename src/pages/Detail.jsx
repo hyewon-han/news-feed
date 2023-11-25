@@ -1,108 +1,44 @@
 import Avatar from 'components/Avatar';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import defaultThumb from 'assets/default-thumb.jpeg';
 import theme from 'styles/Theme';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from 'firebase.js';
-import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-
-import Modal from 'components/Modal';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
+import DeleteUpdate from 'components/DeleteUpdate';
 
 function Detail() {
   const { id } = useParams();
-
-  const [userId, setUserId] = useState();
-  const [feed, setFeed] = useState([]);
+  const [feed, setFeed] = useState('');
   const [user, setUser] = useState('');
-  const [isInputDisabled, setIsInputDisabled] = useState(true);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [thumbImg, setThumbImg] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const navigate = useNavigate();
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log('user', user); // user 정보 없으면 null 표시
-      setUserId(user?.uid);
-    });
-  }, []);
+  const userId = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('userId', userId);
-      const q = query(collection(db, 'users'), where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        // console.log(`${doc.id} => ${doc.data()}`);
-        // console.log(doc.data());
-        setUser(doc.data());
-      });
-    };
-    if (userId) fetchData();
-  }, [userId]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const q = query(collection(db, 'feeds'), where('feedId', '==', id));
-      const querySnapshot = await getDocs(q);
-      const initialFeed = [];
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-        const data = {
-          id: doc.id,
-          ...doc.data()
-        };
-        initialFeed.push(data);
-      });
-      setFeed(...initialFeed);
+      try {
+        if (userId) {
+          const userQuery = query(collection(db, 'users'), where('userId', '==', userId));
+          const userSnapshot = await getDocs(userQuery);
+          if (userSnapshot.docs.length > 0) {
+            const userData = { id: userSnapshot.docs[0].id, ...userSnapshot.docs[0].data() };
+            setUser(userData);
+          }
+          const feedQuery = query(collection(db, 'feeds'), where('feedId', '==', id));
+          const feedSnapshot = await getDocs(feedQuery);
+          if (feedSnapshot.docs.length > 0) {
+            const feedData = { id: feedSnapshot.docs[0].id, ...feedSnapshot.docs[0].data() };
+            setFeed(feedData);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      }
     };
     fetchData();
   }, []);
-  console.log(feed);
 
-  const updateFeed = async () => {
-    const feedsRef = doc(db, 'feeds', feed.id);
-    await updateDoc(feedsRef, {
-      title,
-      content,
-      thumbImg
-    });
-    closeModal();
-    window.location.reload();
-  };
-
-  const deleteFeed = async () => {
-    const result = window.confirm('정말 삭제하시겠습니까?');
-    if (result) {
-      const feedsRef = doc(db, 'feeds', feed.id);
-      await deleteDoc(feedsRef);
-      navigate('/');
-    }
-  };
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // FileReader를 사용하여 이미지를 Base64로 변환
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumbImg(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  //console.log(title, content, thumbImg);
   return (
     <Feed>
       <Header>
@@ -110,30 +46,11 @@ function Detail() {
         <span>{feed.author}</span>
         <p>{feed.title}</p>
       </Header>
-
       <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
-
       <time>{feed.createAt}</time>
-      <StDiv>
-        {feed.userId === userId ? (
-          <>
-            <button onClick={deleteFeed}>삭제</button>
-            <button onClick={openModal}>수정</button>
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} />
-              <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-              <input type="file" accept="image/*" onChange={handleFileChange} />
-              <div>
-                <button onClick={updateFeed}>수정완료</button>
-                <button onClick={closeModal}>취소</button>
-              </div>
-            </Modal>
-          </>
-        ) : null}
-      </StDiv>
-
+      <DeleteUpdate feed={feed} userId={userId} />
       <StTextarea value={feed.content} disabled />
-      <Avatar />
+      <Avatar src={user?.avatar} />
       <span>{user?.name}</span>
       <span>{user?.mbti}</span>
       <form></form>
