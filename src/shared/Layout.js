@@ -6,8 +6,9 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from 'firebase.js';
 import Avatar from 'components/Avatar';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { logOutUser } from 'redux/modules/user';
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Layout({ children }) {
   const [isListVisible, setIsListVisible] = useState(false);
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -22,9 +24,9 @@ function Layout({ children }) {
       setCurrentUser(user);
       setUserId(user?.uid);
     });
-
     document.addEventListener('click', () => setIsListVisible(false));
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       console.log('userId', userId);
@@ -51,6 +53,7 @@ function Layout({ children }) {
     event.preventDefault();
     setIsListVisible(false);
     setUser('');
+    dispatch(logOutUser());
     await signOut(auth);
   };
   return (
@@ -62,7 +65,7 @@ function Layout({ children }) {
         <Btns>
           {currentUser ? (
             <>
-              <Avatar onClick={handleClickAvatar} />
+              <Avatar src={user?.avatar} onClick={handleClickAvatar} />
               <span>{user?.name}</span>
             </>
           ) : (

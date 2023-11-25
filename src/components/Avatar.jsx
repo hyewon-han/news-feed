@@ -17,8 +17,8 @@ const AvatarFigure = styled.figure`
     switch (props.size) {
       case 'large':
         return css`
-          width: 75px;
-          height: 75px;
+          width: 90px;
+          height: 90px;
         `;
       default:
         return css`

@@ -1,75 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
 import { auth, db } from 'firebase.js';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import Avatar from './Avatar';
+import { useParams } from 'react-router-dom';
+import Button from './Button';
 
 export default function UserCard({ user }) {
   // const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [mbti, setMbti] = useState(user.mbti);
+  const [avatar, setAvatar] = useState(null);
+  const [mbti, setMbti] = useState('');
 
-  console.log(user);
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userDoc = await getDoc(doc(db, 'users', userId));
-
-  //       if (userDoc.exists()) {
-  //         setUser(userDoc.data());
-  //       } else {
-  //         console.log('User data not found in Firestore');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error.message);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [userId]);
-
-  useEffect(() => {
-    console.log(auth?.currentUser?.uid);
-  }, [auth]);
-
-  const handleEditToggle = () => {
-    // if (isEditing) {
-    //   const userRef = doc(asdasd, asdasd, user.id);
-    //   updateDoc(userRef, { ...user, mbti, email, name });
-    // }
-    setIsEditing(!isEditing);
+  const selectRef = useRef();
+  const selectMbti = () => {
+    setMbti(selectRef.current.value);
+    return selectRef.current.value;
   };
 
-  const handleInputChange = (e) => {
-    if (e.target.name === 'name') {
-      setName('name');
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // FileReader를 사용하여 이미지를 Base64로 변환
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
-    console.log(e.target.value);
+  };
+  console.log(name, mbti, avatar);
+
+  const updateUser = async () => {
+    const usersRef = doc(db, 'users', user.id);
+    await updateDoc(usersRef, {
+      name,
+      mbti,
+      avatar
+    });
+    window.location.reload();
   };
 
   return (
     <LetterWrapper>
       <UserInfo>
-        <AvatarFigure>
-          <img src={user?.profileImg ?? defaultUser} alt="Avatar image" />
-        </AvatarFigure>
+        <Avatar src={user?.avatar} size="large" />
         <NicknameAndData>
-          {isEditing ? <input type="text" value={name} onChange={handleInputChange} /> : <p>이름: {user?.name}</p>}
-          {isEditing ? <input type="text" value={email} onChange={handleInputChange} /> : <p>이메일: {user?.email}</p>}
-          {isEditing ? <input type="text" value={mbti} onChange={handleInputChange} /> : <p>MBTI: {user?.mbti}</p>}
+          {isEditing ? (
+            <input name="name" type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          ) : (
+            <p>이름: {user?.name}</p>
+          )}
+          <p>이메일: {user?.email}</p>
+          {/* {isEditing ? <input type="text" value={mbti} onChange={handleInputChange} /> : <p>MBTI: {user?.mbti}</p>} */}
+          {isEditing ? (
+            <select id="mbti" onChange={selectMbti} ref={selectRef}>
+              <option value="intj">INTJ</option>
+              <option value="intp">INTP</option>
+              <option value="entj">ENTJ</option>
+              <option value="entp">ENTP</option>
+              <option value="infj">INFJ</option>
+              <option value="infp">INFP</option>
+              <option value="enfj">ENFJ</option>
+              <option value="enfp">ENFP</option>
+              <option value="istj">ISTJ</option>
+              <option value="isfj">ISFJ</option>
+              <option value="estj">ESTJ</option>
+              <option value="esfj">ESFJ</option>
+              <option value="istp">ISTP</option>
+              <option value="isfp">ISFP</option>
+              <option value="estp">ESTP</option>
+              <option value="esfp">ESFP</option>
+            </select>
+          ) : (
+            <p>MBTI: {user?.mbti}</p>
+          )}
+          {isEditing ? <input name="file" type="file" accept="image/*" onChange={handleFileChange} /> : null}
         </NicknameAndData>
       </UserInfo>
 
       {isEditing ? (
-        <EditProfile onClick={handleEditToggle}>수정완료</EditProfile>
+        <>
+          <Btns>
+            <Button onClick={updateUser}>수정완료</Button>
+            <Button onClick={() => setIsEditing(false)}>취소</Button>
+          </Btns>
+        </>
       ) : (
-        <EditProfile onClick={handleEditToggle}>EditProfile</EditProfile>
+        <Btns>
+          <Button color="yellow" onClick={() => setIsEditing(true)}>
+            회원정보 수정
+          </Button>
+        </Btns>
       )}
-
-      <div style={{ display: isEditing ? 'none' : 'block' }}>{user?.mbti}</div>
     </LetterWrapper>
   );
 }
@@ -89,19 +114,6 @@ const UserInfo = styled.div`
   flex-direction: center;
 `;
 
-const AvatarFigure = styled.figure`
-  //figure태그안에는 이미 자식요소로 이미지 태그가있음
-  width: 100px;
-  height: 100px;
-  border-radius: 50%; //높이넓이가같을때 보더 래디우스를 50%주면 동그래짐
-  overflow: hidden; //이미지가 삐져나오면 숨겨줌
-  & img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; //이미지 크기가 피규어 크기만큼 꽉차게 빈틈없이만들어줌
-    border-radius: 50%;
-  }
-`;
 const NicknameAndData = styled.div`
   display: flex;
   gap: 6px;
@@ -115,4 +127,10 @@ const EditProfile = styled.button`
   margin-left: 390px;
   white-space: nowrap;
   cursor: pointer;
+`;
+
+const Btns = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
 `;
