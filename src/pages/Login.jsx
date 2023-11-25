@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from 'firebase.js';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db, provider } from 'firebase.js';
+import { onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { logInUser } from 'redux/modules/user';
+import Button from 'components/Button';
+import styled from 'styled-components';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -67,6 +69,26 @@ function Login() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log('Google Login Successful:', user);
+      dispatch(logInUser(user.uid));
+      const userObj = {
+        name: user.displayName,
+        email: user.email,
+        avatar: user.photoURL,
+        userId: user.uid,
+        mbti: null
+      };
+      const docRef = await addDoc(collection(db, 'users'), userObj);
+      console.log('Document written with ID: ', docRef.id);
+    } catch (error) {
+      console.error('Google Login Error:', error.message);
+    }
+  };
+
   return (
     <div>
       <form>
@@ -94,10 +116,20 @@ function Login() {
           />
         </div>
         <p>{error && <span style={{ color: 'red' }}>{error}</span>}</p>
-        <button onClick={signIn}>로그인</button>
+        <Btns>
+          <Button onClick={signIn}>로그인</Button>
+          <Button onClick={handleGoogleLogin}>구글 로그인</Button>
+        </Btns>
       </form>
     </div>
   );
 }
 
 export default Login;
+
+const Btns = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+`;
