@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
 import UserInfo from 'components/UserInfo';
-import { auth, db } from 'firebase.js';
+
 function MyProfile() {
   return (
     <ProfileBox>
@@ -24,11 +24,3 @@ const ProfileBox = styled.div`
   height: 85%;
   min-width: 580px;
 `;
-
-const WriteBox = styled.ul`
-  border: 1px solid ${theme.color.blue};
-  width: 90%;
-  height: 65%;
-`;
-
-const WriteList = styled.li``;
