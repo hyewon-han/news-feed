@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Modal from './Modal';
+import Button from './Button';
 
 function DeleteUpdate({ feed, userId }) {
+  console.log(feed);
   const [title, setTitle] = useState(feed.title);
   const [content, setContent] = useState(feed.content);
   const [thumbImg, setThumbImg] = useState(null);
@@ -52,7 +54,7 @@ function DeleteUpdate({ feed, userId }) {
     <StDiv>
       {feed.userId === userId ? (
         <>
-          <button onClick={deleteFeed}>삭제</button>
+          <Button onClick={deleteFeed}>삭제</Button>
           <button onClick={openModal}>수정</button>
           <Modal isOpen={isModalOpen} onClose={closeModal}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} />
