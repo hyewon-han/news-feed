@@ -1,20 +1,20 @@
-import { auth, db } from 'firebase.js';
-import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db, storage } from 'firebase.js';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import { createFeed } from 'redux/modules/feed';
 import { useNavigate } from 'react-router-dom';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import Button from 'components/Button';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 function Upload() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const feedId = uuidv4();
   const [userId, setUserId] = useState(null);
-  const [thumbImg, setThumbImg] = useState(null);
+  //const [thumbImg, setThumbImg] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [user, setUser] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,10 +47,11 @@ function Upload() {
     if (name === 'title') setTitle(value);
     if (name === 'content') setContent(value);
   };
-  console.log(title, content, thumbImg);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setSelectedFile(file);
+    /*
     if (file) {
       // FileReader를 사용하여 이미지를 Base64로 변환
       const reader = new FileReader();
@@ -59,6 +60,7 @@ function Upload() {
       };
       reader.readAsDataURL(file);
     }
+    */
   };
 
   const formattedDate = new Intl.DateTimeFormat('ko-KR', {
@@ -66,8 +68,12 @@ function Upload() {
     timeStyle: 'short'
   }).format(new Date());
 
-  const createFeedObj = async (e) => {
+  const createFeed = async (e) => {
     e.preventDefault();
+    const imageRef = ref(storage, `${auth.currentUser.uid}/${selectedFile.name}`);
+    await uploadBytes(imageRef, selectedFile);
+    const downloadURL = await getDownloadURL(imageRef);
+
     try {
       const docRef = await addDoc(collection(db, 'feeds'), {
         feedId,
@@ -75,7 +81,7 @@ function Upload() {
         content,
         userId,
         createAt: formattedDate,
-        thumbImg,
+        thumbImg: downloadURL,
         author: user.name,
         authorImg: user.avatar,
         like: 0,
@@ -93,7 +99,7 @@ function Upload() {
   return (
     <StPost>
       <StH1>게시글 작성하기</StH1>
-      <form onSubmit={createFeedObj}>
+      <form onSubmit={createFeed}>
         <StTitle
           name="title"
           type="text"

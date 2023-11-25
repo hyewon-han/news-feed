@@ -5,21 +5,30 @@ import styled from 'styled-components';
 import defaultThumb from 'assets/default-thumb.jpeg';
 import theme from 'styles/Theme';
 import { auth, db } from 'firebase.js';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
+import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
 import DeleteUpdate from 'components/DeleteUpdate';
 import Button from 'components/Button';
 import LikeFeed from 'components/LikeFeed';
 import { v4 as uuidv4 } from 'uuid';
+import { snapshotFeeds } from 'redux/modules/feeds';
 
 function Detail() {
   const { id } = useParams();
   const [feed, setFeed] = useState('');
   const [user, setUser] = useState('');
   const [comment, setComment] = useState('');
-  const [feedData, setFeedData] = useState('');
+  const [feeds, setFeeds] = useState(null);
+
   const userId = useSelector((state) => state.user);
   const commentId = uuidv4();
+  const dispatch = useDispatch();
+
+  // const feeds = useSelector((state) => state.feeds);
+
+  // console.log(feeds);
+  // const feed = feeds.find((feed) => feed.feedId === id);
+  // console.log(feed);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +45,6 @@ function Detail() {
           if (feedSnapshot.docs.length > 0) {
             const feedData = { id: feedSnapshot.docs[0].id, ...feedSnapshot.docs[0].data() };
             setFeed(feedData);
-            setFeedData(feedData);
           }
         }
       } catch (error) {
@@ -46,9 +54,10 @@ function Detail() {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   setFeed(feedData);
-  // }, [feedData]);
+  const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'full',
+    timeStyle: 'short'
+  }).format(new Date());
 
   const createComment = async (e) => {
     e.preventDefault();
@@ -62,7 +71,8 @@ function Detail() {
           writerMbti: user.mbti,
           writerAvatar: user.avatar,
           writerId: user.userId,
-          commentId
+          commentId,
+          date: formattedDate
         }
       ]
     });
@@ -104,6 +114,7 @@ function Detail() {
               <span>{item.writer}</span>
               <span>{item.writerMbti}</span>
               <span>{item.comment}</span>
+              <span>{item.date}</span>
               {item.writerId === user.userId ? (
                 <button onClick={() => deleteComment(item.commentId)}>삭제</button>
               ) : null}
