@@ -1,26 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
-import { auth, db } from 'firebase.js';
+import { auth, db, storage } from 'firebase.js';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import Avatar from './Avatar';
 import { useParams } from 'react-router-dom';
 import Button from './Button';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 export default function UserCard({ user }) {
-  // const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [avatar, setAvatar] = useState(null);
   const [mbti, setMbti] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  // const selectRef = useRef();
+  console.log(user);
   const selectMbti = (e) => {
     setMbti(e.target.value);
   };
-  console.log(name, mbti);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    // setSelectedFile(file);
     if (file) {
       // FileReader를 사용하여 이미지를 Base64로 변환
       const reader = new FileReader();
@@ -31,9 +34,9 @@ export default function UserCard({ user }) {
     }
   };
   console.log(user);
-
   const updateUser = async () => {
     const usersRef = doc(db, 'users', user.id);
+
     await updateDoc(usersRef, {
       name,
       mbti: mbti ?? user.mbti,
