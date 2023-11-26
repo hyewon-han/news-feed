@@ -51,7 +51,7 @@ function Detail() {
       }
     };
     fetchData();
-  }, []);
+  }, [feed]);
 
   const formattedDate = new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'full',
@@ -75,7 +75,8 @@ function Detail() {
         }
       ]
     });
-    window.location.reload();
+    // window.location.reload();
+    setComment('');
   };
 
   const deleteComment = async (id) => {
@@ -85,7 +86,7 @@ function Detail() {
       await updateDoc(feedsRef, {
         comments: feed.comments.filter((item) => item.commentId !== id)
       });
-      window.location.reload();
+      // window.location.reload();
     }
   };
 
