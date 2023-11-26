@@ -42,7 +42,7 @@ function UserInfo() {
       {userData && <UserCard user={userData} />}
 
       <ListWrapper>
-        내가쓴 게시글 목록
+        <span>내가 작성한 게시글</span>
         {userPosts.map((feed) => (
           <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
             <ContentsCard feed={feed} />
@@ -57,10 +57,18 @@ const ListWrapper = styled.ul`
   background-color: transparent;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin: 20px;
   gap: 20px;
   padding: 12px;
   width: 500px;
   border-radius: 12px;
-  border: 2px solid ${theme.color.yellow};
+  /* border: 2px solid ${theme.color.yellow}; */
+  background-color: whitesmoke;
+
+  & span {
+    font-size: ${theme.fontSize.xl};
+    font-weight: 800;
+  }
 `;
 export default UserInfo;

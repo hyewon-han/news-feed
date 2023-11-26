@@ -12,23 +12,23 @@ function Home() {
   // const [userId, setUserId] = useState(null);
   const [users, setUsers] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const q = query(collection(db, 'users'));
-      const querySnapshot = await getDocs(q);
-      const initialUsers = [];
-      querySnapshot.forEach((doc) => {
-        // console.log(`${doc.id} => ${doc.data()}`);
-        const data = {
-          userId: doc.id,
-          ...doc.data()
-        };
-        initialUsers.push(data);
-      });
-      setUsers(initialUsers);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const q = query(collection(db, 'users'));
+  //     const querySnapshot = await getDocs(q);
+  //     const initialUsers = [];
+  //     querySnapshot.forEach((doc) => {
+  //       // console.log(`${doc.id} => ${doc.data()}`);
+  //       const data = {
+  //         userId: doc.id,
+  //         ...doc.data()
+  //       };
+  //       initialUsers.push(data);
+  //     });
+  //     setUsers(initialUsers);
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +59,7 @@ function Home() {
         <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
         <time>{feed.createAt}</time>
         <StDiv>댓글 수{feed.comments?.length}</StDiv>
+        <StDiv>좋아요 수{feed.like}</StDiv>
       </Feed>
     </Link>
   ));

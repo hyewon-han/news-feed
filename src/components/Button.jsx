@@ -31,7 +31,7 @@ const StBtn = styled.button`
       case 'large':
         return css`
           height: 50px;
-          min-width: 100px;
+          min-width: 130px;
           max-width: 200px;
         `;
       case 'small':

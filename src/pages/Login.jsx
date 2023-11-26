@@ -90,38 +90,27 @@ function Login() {
   };
 
   return (
-    <div>
-      <form>
-        <div>
-          <p>반갑습니다</p>
-          <p>MBTI community 입니다</p>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            name="email"
-            onChange={onChange}
-            required
-            placeholder="email..."
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            value={password}
-            name="password"
-            onChange={onChange}
-            required
-            placeholder="password..."
-          />
-        </div>
+    <Container>
+      <StForm>
+        <p>Welcome to MBTI Community!😀</p>
+        <input id="email" type="email" value={email} name="email" onChange={onChange} required placeholder="email..." />
+
+        <input
+          type="password"
+          value={password}
+          name="password"
+          onChange={onChange}
+          required
+          placeholder="password..."
+        />
+
         <p>{error && <span style={{ color: 'red' }}>{error}</span>}</p>
         <Btns>
           <Button onClick={signIn}>로그인</Button>
           <Button onClick={handleGoogleLogin}>구글 로그인</Button>
         </Btns>
-      </form>
-    </div>
+      </StForm>
+    </Container>
   );
 }
 
@@ -131,5 +120,22 @@ const Btns = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  align-items: center;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  /* background-color: yellow; */
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StForm = styled.form`
+  background-color: yellow;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;

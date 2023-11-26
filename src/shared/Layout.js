@@ -9,6 +9,7 @@ import Avatar from 'components/Avatar';
 import { useSelector, useDispatch } from 'react-redux';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { logOutUser } from 'redux/modules/user';
+import Button from 'components/Button';
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -65,14 +66,18 @@ function Layout({ children }) {
         </Link>
         <Btns>
           {currentUser ? (
-            <>
+            <User>
               <Avatar src={user?.avatar} onClick={handleClickAvatar} />
               <span>{user?.name}</span>
-            </>
+            </User>
           ) : (
             <>
-              <button onClick={() => navigate('/login')}>LOGIN</button>
-              <button onClick={() => navigate('/join')}>JOIN</button>
+              <Button color="yellow" onClick={() => navigate('/login')}>
+                LOGIN
+              </Button>
+              <Button color="yellow" onClick={() => navigate('/join')}>
+                JOIN
+              </Button>
             </>
           )}
         </Btns>
@@ -101,7 +106,7 @@ export default Layout;
 const StHeader = styled.header`
   background-color: ${theme.color.blue};
   width: 100%;
-  height: 50px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -127,7 +132,7 @@ const StLayout = styled.div`
 `;
 
 const Btns = styled.div`
-  width: 150px;
+  width: 200px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -144,6 +149,22 @@ const List = styled.ul`
   color: black;
   right: 5%;
   top: 5%;
-  padding: 10px;
+  /* padding: 10px; */
   border-radius: 10px;
+  & li {
+    margin: 5px 0px;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+      color: white;
+      background-color: ${theme.color.purple};
+    }
+  }
+`;
+
+const User = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 10px 0px;
 `;

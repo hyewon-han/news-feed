@@ -5,7 +5,7 @@ import defaultUser from 'assets/default-user.jpeg';
 function Avatar({ src, size, onClick }) {
   return (
     <AvatarFigure size={size}>
-      <img src={src ?? defaultUser} alt="이미지없음" onClick={onClick} />
+      <AvatarImg src={src ?? defaultUser} alt="이미지없음" onClick={onClick} />
     </AvatarFigure>
   );
 }
@@ -36,7 +36,16 @@ const AvatarFigure = styled.figure`
     object-fit: cover;
     border-radius: 50%;
   }
-  &:hover {
-    cursor: pointer;
-  }
+`;
+
+const AvatarImg = styled.img`
+  ${({ onClick }) =>
+    onClick &&
+    css`
+      cursor: pointer;
+      &:hover {
+        /* 추가적인 스타일 설정 가능 */
+        opacity: 0.8;
+      }
+    `}
 `;

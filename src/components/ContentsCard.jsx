@@ -30,7 +30,7 @@ const LetterWrapper = styled.li`
   flex-direction: column;
   color: ${theme.color.blue};
   padding: 12px;
-  border: 1px solid white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 12px;
 `;
 const UserInfo = styled.div`
