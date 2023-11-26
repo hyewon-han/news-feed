@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { logInUser } from 'redux/modules/user';
 import Button from 'components/Button';
 import styled from 'styled-components';
+import theme from 'styles/Theme';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -92,7 +93,7 @@ function Login() {
   return (
     <Container>
       <StForm>
-        <p>Welcome to MBTI Community!😀</p>
+        <h1>Welcome to MBTI Community!😀</h1>
         <input id="email" type="email" value={email} name="email" onChange={onChange} required placeholder="email..." />
 
         <input
@@ -125,7 +126,6 @@ const Btns = styled.div`
 
 const Container = styled.div`
   width: 100%;
-  /* background-color: yellow; */
   height: 80vh;
   display: flex;
   justify-content: center;
@@ -133,9 +133,22 @@ const Container = styled.div`
 `;
 
 const StForm = styled.form`
-  background-color: yellow;
   padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
+  & h1 {
+    font-size: ${theme.fontSize.xl};
+    margin-bottom: 25px;
+  }
+  & input {
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    &:focus {
+      outline: 1px solid ${theme.color.blue};
+    }
+  }
 `;
