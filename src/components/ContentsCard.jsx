@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import defaultUser from 'assets/defaultUser.png';
 import theme from 'styles/Theme';
-import { Link } from 'react-router-dom';
+import defaultThumb from 'assets/default-thumb.jpeg';
 
 export default function ContentsCard({ feed }) {
   return (
@@ -10,7 +10,7 @@ export default function ContentsCard({ feed }) {
       <UserInfo>
         <NicknameAndData>
           <p>{feed.title}</p>
-          <StyledImage src={feed.thumbImg} alt="Feed Image" />
+          <StyledImage src={feed.thumbImg ?? defaultThumb} alt="Feed Image" />
 
           <p>{feed.content}</p>
           <p>{feed.createAt}</p>
@@ -30,7 +30,7 @@ const LetterWrapper = styled.li`
   flex-direction: column;
   color: ${theme.color.blue};
   padding: 12px;
-  border: 1px solid white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 12px;
 `;
 const UserInfo = styled.div`

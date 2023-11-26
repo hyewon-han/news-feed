@@ -1,27 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
-import { auth, db } from 'firebase.js';
+import { auth, db, storage } from 'firebase.js';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import Avatar from './Avatar';
 import { useParams } from 'react-router-dom';
 import Button from './Button';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 export default function UserCard({ user }) {
-  // const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [avatar, setAvatar] = useState(null);
-  const [mbti, setMbti] = useState('');
+  const [mbti, setMbti] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const selectRef = useRef();
-  const selectMbti = () => {
-    setMbti(selectRef.current.value);
-    return selectRef.current.value;
+  console.log(user);
+  const selectMbti = (e) => {
+    setMbti(e.target.value);
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    // setSelectedFile(file);
     if (file) {
       // FileReader를 사용하여 이미지를 Base64로 변환
       const reader = new FileReader();
@@ -31,14 +33,14 @@ export default function UserCard({ user }) {
       reader.readAsDataURL(file);
     }
   };
-  console.log(name, mbti, avatar);
-
+  console.log(user);
   const updateUser = async () => {
     const usersRef = doc(db, 'users', user.id);
+
     await updateDoc(usersRef, {
       name,
-      mbti,
-      avatar
+      mbti: mbti ?? user.mbti,
+      avatar: avatar ?? user.avatar
     });
     window.location.reload();
   };
@@ -56,23 +58,26 @@ export default function UserCard({ user }) {
           <p>이메일: {user?.email}</p>
           {/* {isEditing ? <input type="text" value={mbti} onChange={handleInputChange} /> : <p>MBTI: {user?.mbti}</p>} */}
           {isEditing ? (
-            <select id="mbti" onChange={selectMbti} ref={selectRef}>
-              <option value="intj">INTJ</option>
-              <option value="intp">INTP</option>
-              <option value="entj">ENTJ</option>
-              <option value="entp">ENTP</option>
-              <option value="infj">INFJ</option>
-              <option value="infp">INFP</option>
-              <option value="enfj">ENFJ</option>
-              <option value="enfp">ENFP</option>
-              <option value="istj">ISTJ</option>
-              <option value="isfj">ISFJ</option>
-              <option value="estj">ESTJ</option>
-              <option value="esfj">ESFJ</option>
-              <option value="istp">ISTP</option>
-              <option value="isfp">ISFP</option>
-              <option value="estp">ESTP</option>
-              <option value="esfp">ESFP</option>
+            <select id="mbti" onChange={selectMbti}>
+              <option value="" disabled>
+                MBTI
+              </option>
+              <option value="INTJ">INTJ</option>
+              <option value="INTP">INTP</option>
+              <option value="ENTJ">ENTJ</option>
+              <option value="ENTP">ENTP</option>
+              <option value="INFJ">INFJ</option>
+              <option value="INFP">INFP</option>
+              <option value="ENFJ">ENFJ</option>
+              <option value="ENFP">ENFP</option>
+              <option value="ISTJ">ISTJ</option>
+              <option value="ISFJ">ISFJ</option>
+              <option value="ESTJ">ESTJ</option>
+              <option value="ESFJ">ESFJ</option>
+              <option value="ISTP">ISTP</option>
+              <option value="ISFP">ISFP</option>
+              <option value="ESTP">ESTP</option>
+              <option value="ESFP">ESFP</option>
             </select>
           ) : (
             <p>MBTI: {user?.mbti}</p>

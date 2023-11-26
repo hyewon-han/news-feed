@@ -13,7 +13,7 @@ const Modal = ({ isOpen, onClose, children }) => {
   return (
     <Overlay onClick={handleOverlayClick}>
       <Content>
-        <CloseButton onClick={onClose}>Close</CloseButton>
+        {/* <CloseButton onClick={onClose}>Close</CloseButton> */}
         {children}
       </Content>
     </Overlay>
@@ -46,11 +46,11 @@ const Content = styled.div`
   flex-direction: column;
 `;
 
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-`;
+// const CloseButton = styled.button`
+//   background: none;
+//   border: none;
+//   cursor: pointer;
+//   position: absolute;
+//   top: 10px;
+//   right: 10px;
+// `;

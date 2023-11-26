@@ -31,8 +31,14 @@ const StBtn = styled.button`
       case 'large':
         return css`
           height: 50px;
-          min-width: 100px;
+          min-width: 130px;
           max-width: 200px;
+        `;
+      case 'small':
+        return css`
+          height: 35px;
+          min-width: 50px;
+          max-width: 100px;
         `;
       default:
         return css`
@@ -46,7 +52,7 @@ const StBtn = styled.button`
   transition: all 0.2s ease-in-out;
   padding: 10px;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: ${theme.fontSize.base};
 
   &:hover {
     cursor: pointer;

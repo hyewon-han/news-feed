@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Modal from './Modal';
 import Button from './Button';
+import theme from 'styles/Theme';
 
 function DeleteUpdate({ feed, userId }) {
-  console.log(feed);
   const [title, setTitle] = useState(feed.title);
   const [content, setContent] = useState(feed.content);
   const [thumbImg, setThumbImg] = useState(null);
@@ -54,16 +54,26 @@ function DeleteUpdate({ feed, userId }) {
     <StDiv>
       {feed.userId === userId ? (
         <>
-          <Button onClick={deleteFeed}>삭제</Button>
-          <Button onClick={openModal}>수정</Button>
+          <Btns>
+            <Button onClick={deleteFeed}>삭제</Button>
+            <Button onClick={openModal}>수정</Button>
+          </Btns>
+
           <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-            <div>
+            <Wrapper>
+              <label htmlFor="title">제목</label>
+              <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+
+              <label htmlFor="content">내용</label>
+              <Textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} />
+
+              <label htmlFor="file">썸네일</label>
+              <input id="file" type="file" accept="image/*" onChange={handleFileChange} />
+            </Wrapper>
+            <Btns>
               <Button onClick={updateFeed}>수정완료</Button>
               <Button onClick={closeModal}>취소</Button>
-            </div>
+            </Btns>
           </Modal>
         </>
       ) : null}
@@ -76,4 +86,27 @@ export default DeleteUpdate;
 const StDiv = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
+
+const Btns = styled.div`
+  display: flex;
+  gap: 15px;
+  margin: 15px;
+
+  justify-content: center;
+`;
+
+const Wrapper = styled.div`
+  /* display: flex;
+  flex-direction: column; */
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  gap: 10px;
+  font-size: ${theme.fontSize.base};
+`;
+
+const Textarea = styled.textarea`
+  width: 97%;
+  height: 100px;
+  resize: none;
 `;
