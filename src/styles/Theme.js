@@ -10,7 +10,7 @@ const color = {
 };
 
 const fontSize = {
-  sm: '0.75rem',
+  sm: '0.8rem',
   base: '1rem',
   lg: '1.25rem',
   xl: '1.5rem'

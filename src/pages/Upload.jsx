@@ -1,14 +1,10 @@
 import { auth, db, storage } from 'firebase.js';
-import { onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-
 import Button from 'components/Button';
 
 function Upload() {
@@ -16,10 +12,8 @@ function Upload() {
   const [content, setContent] = useState('');
   const feedId = uuidv4();
   const [userId, setUserId] = useState(null);
-  //const [thumbImg, setThumbImg] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [user, setUser] = useState('');
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,9 +34,6 @@ function Upload() {
     if (userId) fetchData();
   }, [userId]);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
   const handleInputChange = (event) => {
     const {
       target: { value, name }
@@ -50,20 +41,10 @@ function Upload() {
     if (name === 'title') setTitle(value);
     if (name === 'content') setContent(value);
   };
-  //console.log(title, content, thumbImg);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-    // if (file) {
-    //   // FileReader를 사용하여 이미지를 Base64로 변환
-    //   const reader = new FileReader();
-    //   reader.onloadend = () => {
-    //     setThumbImg(reader.result);
-    //   };
-    //   reader.readAsDataURL(file);
-    // }
-    // 수정
   };
 
   const formattedDate = new Intl.DateTimeFormat('ko-KR', {
@@ -139,7 +120,7 @@ const StPost = styled.div`
 `;
 
 const StH1 = styled.h1`
-  font-size: 50px;
+  font-size: 30px;
   font-weight: bold;
   color: #475c7a;
   margin-top: 50px;
@@ -180,19 +161,5 @@ const StFile = styled.input`
   text-indent: 10px;
   line-height: 50px;
   vertical-align: middle;
-  cursor: pointer;
-`;
-
-const StBtn = styled.button`
-  width: 150px;
-  height: 50px;
-  background-color: #475c7a;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 20px;
-  padding: 10px;
-  float: right;
   cursor: pointer;
 `;

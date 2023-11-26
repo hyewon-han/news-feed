@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from 'firebase.js';
 import Avatar from 'components/Avatar';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { logOutUser } from 'redux/modules/user';
 import Button from 'components/Button';
@@ -42,10 +42,6 @@ function Layout({ children }) {
     if (userId) fetchData();
   }, [userId]);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   const handleClickAvatar = (e) => {
     e.stopPropagation();
     setIsListVisible(!isListVisible);
@@ -62,7 +58,7 @@ function Layout({ children }) {
     <div>
       <StHeader>
         <Link to="/">
-          <StSpan>MBTI Community</StSpan>
+          <StSpan>MBTI Community 👨‍👩‍👧‍👦</StSpan>
         </Link>
         <Btns>
           {currentUser ? (
@@ -149,15 +145,15 @@ const List = styled.ul`
   color: black;
   right: 5%;
   top: 5%;
-  /* padding: 10px; */
   border-radius: 10px;
   & li {
     margin: 5px 0px;
     padding: 10px;
     transition: all 0.3s ease-in-out;
+    font-size: ${theme.fontSize.lg};
     &:hover {
       color: white;
-      background-color: ${theme.color.purple};
+      background-color: ${theme.color.pink};
     }
   }
 `;

@@ -2,13 +2,11 @@ import { createStore, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import user from 'redux/modules/user';
-import feed from 'redux/modules/feed';
 import users from 'redux/modules/users';
 import feeds from 'redux/modules/feeds';
 
 const rootReducer = combineReducers({
   user,
-  feed,
   users,
   feeds
 });
