@@ -6,17 +6,27 @@ import styled from 'styled-components';
 
 function LikeFeed({ feed }) {
   const [like, setLike] = useState(0);
+  const [isLiked, setIsLiked] = useState(true);
 
   useEffect(() => {
     setLike(feed.like || 0);
   }, [feed]);
 
   const updateFeedLike = async () => {
-    setLike(like + 1);
-    const feedRef = doc(db, 'feeds', feed.id);
-    await updateDoc(feedRef, {
-      like: like + 1
-    });
+    setIsLiked(!isLiked);
+    if (isLiked) {
+      setLike(like + 1);
+      const feedRef = doc(db, 'feeds', feed.id);
+      await updateDoc(feedRef, {
+        like: like + 1
+      });
+    } else {
+      setLike(like - 1);
+      const feedRef = doc(db, 'feeds', feed.id);
+      await updateDoc(feedRef, {
+        like: like - 1
+      });
+    }
   };
 
   return (
