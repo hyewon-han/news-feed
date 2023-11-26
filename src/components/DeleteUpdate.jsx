@@ -12,6 +12,7 @@ function DeleteUpdate({ feed, userId }) {
   const [content, setContent] = useState(feed.content);
   const [thumbImg, setThumbImg] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const navigate = useNavigate();
   const openModal = () => {
     setIsModalOpen(true);
@@ -20,6 +21,7 @@ function DeleteUpdate({ feed, userId }) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -31,6 +33,7 @@ function DeleteUpdate({ feed, userId }) {
       reader.readAsDataURL(file);
     }
   };
+
   const updateFeed = async () => {
     const feedsRef = doc(db, 'feeds', feed.id);
     await updateDoc(feedsRef, {
@@ -39,7 +42,6 @@ function DeleteUpdate({ feed, userId }) {
       thumbImg: thumbImg ?? feed.thumbImg
     });
     closeModal();
-    window.location.reload();
   };
 
   const deleteFeed = async () => {

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import theme from 'styles/Theme';
 import { db } from 'firebase.js';
-import { doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import Avatar from './Avatar';
 
 import Button from './Button';
@@ -36,6 +36,7 @@ export default function UserCard({ user }) {
       mbti: mbti ?? user.mbti,
       avatar: avatar ?? user.avatar
     });
+    setIsEditing(false);
     window.location.reload();
   };
 
