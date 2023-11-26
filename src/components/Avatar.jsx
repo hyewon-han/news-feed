@@ -43,6 +43,7 @@ const AvatarImg = styled.img`
     onClick &&
     css`
       cursor: pointer;
+      transition: all 0.3s ease-in-out;
       &:hover {
         /* 추가적인 스타일 설정 가능 */
         opacity: 0.8;
