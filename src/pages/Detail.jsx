@@ -57,6 +57,11 @@ function Detail() {
     fetchData();
   }, []);
 
+  const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'full',
+    timeStyle: 'short'
+  }).format(new Date());
+
   const createComment = async (e) => {
     e.preventDefault();
     const feedsRef = doc(db, 'feeds', feed.id);
@@ -69,7 +74,8 @@ function Detail() {
           writerMbti: user.mbti,
           writerAvatar: user.avatar,
           writerId: user.userId,
-          commentId
+          commentId,
+          date: formattedDate
         }
       ]
     });
@@ -86,6 +92,7 @@ function Detail() {
       window.location.reload();
     }
   };
+  console.log(feed.comments);
   return (
     <Feed>
       <Header>
@@ -99,7 +106,7 @@ function Detail() {
         </div>
       </Header>
       <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
-      <Date>{feed.createAt}</Date>
+      <StSpan>{feed.createAt}</StSpan>
       <DeleteUpdate feed={feed} userId={userId} />
       <StTextarea value={feed.content} disabled />
       <div>
@@ -131,12 +138,15 @@ function Detail() {
                 </div>
               </Writer>
               <CommentContent>
-                <span>{item.comment}</span>
-                {item.writerId === user.userId ? (
-                  <Button color="yellow" onClick={() => deleteComment(item.commentId)}>
-                    삭제
-                  </Button>
-                ) : null}
+                <div>
+                  <span>{item.comment}</span>
+                  {item.writerId === user.userId ? (
+                    <Button color="yellow" onClick={() => deleteComment(item.commentId)}>
+                      삭제
+                    </Button>
+                  ) : null}
+                </div>
+                <p>{item.date}</p>
               </CommentContent>
             </CommentForm>
           ))}
@@ -187,7 +197,7 @@ const StTextarea = styled.textarea`
   border-radius: 10px;
 `;
 
-const Date = styled.time`
+const StSpan = styled.span`
   display: flex;
   justify-content: flex-end;
   font-size: ${theme.fontSize.base};
@@ -240,10 +250,21 @@ const StForm = styled.form`
 
 const CommentContent = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   width: 80%;
-  justify-content: space-between;
-  align-items: center;
   border-radius: 10px;
   background-color: white;
-  padding: 0px 10px;
+  padding: 10px;
+  & div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+  & p {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: ${theme.fontSize.sm};
+    margin: 3px 0px;
+  }
 `;
