@@ -34,9 +34,9 @@ function DeleteUpdate({ feed, userId }) {
   const updateFeed = async () => {
     const feedsRef = doc(db, 'feeds', feed.id);
     await updateDoc(feedsRef, {
-      title,
-      content,
-      thumbImg
+      title: title ?? feed.title,
+      content: content ?? feed.content,
+      thumbImg: thumbImg ?? feed.thumbImg
     });
     closeModal();
     window.location.reload();

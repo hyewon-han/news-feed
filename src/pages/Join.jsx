@@ -98,58 +98,74 @@ function Join() {
       <StForm onSubmit={signUp}>
         <h1>MBTI Community의 회원이 되어보세요!😃</h1>
         <StContent>
-          <label htmlFor="email">이메일 </label>
-          <input id="email" type="email" placeholder="email" value={email} name="email" onChange={onChange} required />
+          <div>
+            <label htmlFor="email">이메일 </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="email"
+              value={email}
+              name="email"
+              onChange={onChange}
+              required
+            />
+          </div>
+
           {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
+          <div>
+            <label htmlFor="password">비밀번호 </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="password"
+              value={password}
+              name="password"
+              onChange={onChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="confirmPassword">비밀번호 재확인</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="confirm password"
+              value={confirmPassword}
+              name="confirmPassword"
+              onChange={onChange}
+              required
+            />
+          </div>
 
-          <label htmlFor="password">비밀번호 </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="password"
-            value={password}
-            name="password"
-            onChange={onChange}
-            required
-          />
-
-          <label htmlFor="confirmPassword">비밀번호 재확인</label>
-          <input
-            id="confirmPassword"
-            type="password"
-            placeholder="confirm password"
-            value={confirmPassword}
-            name="confirmPassword"
-            onChange={onChange}
-            required
-          />
           {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-
-          <label htmlFor="name">이름 </label>
-          <input id="name" type="text" placeholder="name" value={name} name="name" onChange={onChange} required />
-
-          <label htmlFor="mbti">MBTI</label>
-          <select id="mbti" onChange={onChange} name="mbti">
-            <option value="" disabled>
-              MBTI
-            </option>
-            <option value="INTJ">INTJ</option>
-            <option value="INTP">INTP</option>
-            <option value="ENTJ">ENTJ</option>
-            <option value="ENTP">ENTP</option>
-            <option value="INFJ">INFJ</option>
-            <option value="INFP">INFP</option>
-            <option value="ENFJ">ENFJ</option>
-            <option value="ENFP">ENFP</option>
-            <option value="ISTJ">ISTJ</option>
-            <option value="ISFJ">ISFJ</option>
-            <option value="ESTJ">ESTJ</option>
-            <option value="ESFJ">ESFJ</option>
-            <option value="ISTP">ISTP</option>
-            <option value="ISFP">ISFP</option>
-            <option value="ESTP">ESTP</option>
-            <option value="ESFP">ESFP</option>
-          </select>
+          <div>
+            <label htmlFor="name">이름 </label>
+            <input id="name" type="text" placeholder="name" value={name} name="name" onChange={onChange} required />
+          </div>
+          <div>
+            <label htmlFor="mbti">MBTI</label>
+            <select id="mbti" onChange={onChange} name="mbti">
+              <option value="" disabled>
+                MBTI
+              </option>
+              <option value="INTJ">INTJ</option>
+              <option value="INTP">INTP</option>
+              <option value="ENTJ">ENTJ</option>
+              <option value="ENTP">ENTP</option>
+              <option value="INFJ">INFJ</option>
+              <option value="INFP">INFP</option>
+              <option value="ENFJ">ENFJ</option>
+              <option value="ENFP">ENFP</option>
+              <option value="ISTJ">ISTJ</option>
+              <option value="ISFJ">ISFJ</option>
+              <option value="ESTJ">ESTJ</option>
+              <option value="ESFJ">ESFJ</option>
+              <option value="ISTP">ISTP</option>
+              <option value="ISFP">ISFP</option>
+              <option value="ESTP">ESTP</option>
+              <option value="ESFP">ESFP</option>
+            </select>
+          </div>
         </StContent>
         <Btns>
           <Button>회원가입</Button>
@@ -170,8 +186,8 @@ const Container = styled.div`
 `;
 
 const StContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   font-size: ${theme.fontSize.base};
   padding: 20px;
