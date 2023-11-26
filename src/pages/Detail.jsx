@@ -13,6 +13,7 @@ import LikeFeed from 'components/LikeFeed';
 import { v4 as uuidv4 } from 'uuid';
 import { snapshotFeeds } from 'redux/modules/feeds';
 import { snapshotUsers } from 'redux/modules/users';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function Detail() {
   const { id } = useParams();
@@ -20,8 +21,16 @@ function Detail() {
   const [user, setUser] = useState('');
   const [comment, setComment] = useState('');
   const [feedData, setFeedData] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const userId = useSelector((state) => state.user);
   const commentId = uuidv4();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log('user', user); // user 정보 없으면 null 표시
+      setCurrentUser(user);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,20 +103,22 @@ function Detail() {
       <DeleteUpdate feed={feed} userId={userId} />
       <StTextarea value={feed.content} disabled />
       <div>
-        <CommentForm>
-          <Writer>
-            <Avatar src={user?.avatar} />
-            <div>
-              <p>{user?.name}</p>
-              <span>{user?.mbti}</span>
-            </div>
-          </Writer>
+        {currentUser ? (
+          <CommentForm>
+            <Writer>
+              <Avatar src={user?.avatar} />
+              <div>
+                <p>{user?.name}</p>
+                <span>{user?.mbti}</span>
+              </div>
+            </Writer>
 
-          <StForm onSubmit={createComment}>
-            <StInput type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
-            <Button color="yellow">댓글 작성</Button>
-          </StForm>
-        </CommentForm>
+            <StForm onSubmit={createComment}>
+              <StInput type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
+              <Button color="yellow">댓글 작성</Button>
+            </StForm>
+          </CommentForm>
+        ) : null}
 
         <div>
           {feed.comments?.map((item, idx) => (
