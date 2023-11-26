@@ -50,44 +50,78 @@ function Home() {
 
   return feeds.map((feed) => (
     <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
-      <Feed>
-        <AvatarAndTitle>
-          <Avatar src={feed.authorImg} />
-          <p>{feed.author}</p>
-          <p>{feed.title}</p>
-        </AvatarAndTitle>
-        <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
-        <time>{feed.createAt}</time>
-        <StDiv>댓글 수{feed.comments?.length}</StDiv>
-        <StDiv>좋아요 수{feed.like}</StDiv>
-      </Feed>
+      <FeedBox>
+        <Feed>
+          <AvatarAndTitle>
+            <Avatar />
+            <StP>
+              <p>{feed.author}</p>
+              <p>{feed.title}</p>
+            </StP>
+          </AvatarAndTitle>
+          <FeedTime>{feed.createAt}</FeedTime>
+          <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
+          <StDiv>댓글 ( {feed.comments?.length} )</StDiv>
+        <StDiv>좋아요 ( {feed.like} )</StDiv>
+        </Feed>
+      </FeedBox>
     </Link>
   ));
 }
 
 export default Home;
 
+const FeedBox = styled.div`
+  box-shadow: 0 5px 10px rgb(0 0 0 / 30%), 0 3px 16px rgb(0 0 0 / 30%);
+  width: 600px;
+  min-height: 500px;
+  margin-top: 50px;
+  border-radius: 10px;
+  //background-color: ${theme.color.blue};
+  justify-content: center;
+  display: flex;
+`
+
 const Feed = styled.div`
-  background-color: ${theme.color.yellow};
-  width: 500px;
-  min-height: 300px;
+  box-shadow: 0 5px 5px rgb(0 87 102 / 10%), 0 3px 5px rgb(0 0 0 / 10%);
+  width: 520px;
+  //min-height: 300px;
   margin: 20px 0px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
 `;
 
+const StP = styled.div`
+  flex-direction: column;
+  padding-left: 10px;
+  padding-top: 8px;
+  color: white;
+`
+
+const FeedTime = styled.time`
+  text-align: right;
+  padding-right: 25px;
+  padding-top: 10px;
+  color: ${theme.color.gray};
+`
+
 const AvatarAndTitle = styled.header`
   width: 100%;
-  height: 50px;
+  height: 60px;
   display: flex;
+  border-radius: 5px;
+  background-color: ${theme.color.blue};
 `;
 
 const Thumbnail = styled.img`
   width: 95%;
   height: 200px;
-  margin: 20px auto;
+  margin: 0px 0px 20px 12px;
 `;
 
 const StDiv = styled.div`
-  background-color: ${theme.color.orange};
+  background-color: ${theme.color.blue};
+  padding: 5px 0px 0px 5px;
+  color: white
 `;
