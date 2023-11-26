@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { auth, db, provider } from 'firebase.js';
 import { onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { logInUser } from 'redux/modules/user';
 import Button from 'components/Button';

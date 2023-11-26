@@ -5,14 +5,12 @@ import styled from 'styled-components';
 import defaultThumb from 'assets/default-thumb.jpeg';
 import theme from 'styles/Theme';
 import { auth, db } from 'firebase.js';
-import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
-import { useDispatch, useSelector } from 'react-redux';
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
 import DeleteUpdate from 'components/DeleteUpdate';
 import Button from 'components/Button';
 import LikeFeed from 'components/LikeFeed';
 import { v4 as uuidv4 } from 'uuid';
-import { snapshotFeeds } from 'redux/modules/feeds';
-import { snapshotUsers } from 'redux/modules/users';
 import { onAuthStateChanged } from 'firebase/auth';
 
 function Detail() {
@@ -20,7 +18,6 @@ function Detail() {
   const [feed, setFeed] = useState('');
   const [user, setUser] = useState('');
   const [comment, setComment] = useState('');
-  const [feedData, setFeedData] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const userId = useSelector((state) => state.user);
   const commentId = uuidv4();
@@ -47,7 +44,6 @@ function Detail() {
           if (feedSnapshot.docs.length > 0) {
             const feedData = { id: feedSnapshot.docs[0].id, ...feedSnapshot.docs[0].data() };
             setFeed(feedData);
-            setFeedData(feedData);
           }
         }
       } catch (error) {
@@ -92,7 +88,7 @@ function Detail() {
       window.location.reload();
     }
   };
-  console.log(feed.comments);
+
   return (
     <Feed>
       <Header>

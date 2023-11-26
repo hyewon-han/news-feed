@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import theme from 'styles/Theme';
 import UserCard from './UserCard';
 import ContentsCard from './ContentsCard';
-import { auth, db } from 'firebase.js';
+import { db } from 'firebase.js';
 import { getDocs, collection, query, where } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -19,15 +19,12 @@ function UserInfo() {
         if (user) {
           const userQuery = query(collection(db, 'users'), where('userId', '==', user));
           const userSnapshot = await getDocs(userQuery);
-
           if (userSnapshot.docs.length > 0) {
             const userData = { id: userSnapshot.docs[0].id, ...userSnapshot.docs[0].data() };
             setUserData(userData);
           }
-
           const postsQuery = query(collection(db, 'feeds'), where('userId', '==', user));
           const postsSnapshot = await getDocs(postsQuery);
-
           const postsData = postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
           setUserPosts(postsData);
         }
@@ -40,14 +37,18 @@ function UserInfo() {
   return (
     <>
       {userData && <UserCard user={userData} />}
-
       <ListWrapper>
-        <span>내가 작성한 게시글</span>
-        {userPosts.map((feed) => (
-          <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
-            <ContentsCard feed={feed} />
-          </Link>
-        ))}
+        <span>내가 작성한 게시글 ✍️</span>
+
+        {userPosts.length !== 0 ? (
+          userPosts.map((feed) => (
+            <Link to={`/feeds/${feed.feedId}`} key={feed.feedId}>
+              <ContentsCard feed={feed} />
+            </Link>
+          ))
+        ) : (
+          <span>아직 작성된 게시물이 없어요! 😅</span>
+        )}
       </ListWrapper>
     </>
   );
@@ -63,9 +64,7 @@ const ListWrapper = styled.ul`
   padding: 12px;
   width: 500px;
   border-radius: 12px;
-  /* border: 2px solid ${theme.color.yellow}; */
   background-color: whitesmoke;
-
   & span {
     font-size: ${theme.fontSize.xl};
     font-weight: 800;
