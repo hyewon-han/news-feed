@@ -16,7 +16,7 @@ const user = (state = initialState, action) => {
     case LOGIN_USER:
       return action.payload;
     case LOGOUT_USER:
-      return state;
+      return [];
     default:
       return state;
   }
