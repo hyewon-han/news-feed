@@ -145,7 +145,7 @@ function Detail() {
         ) : null}
 
         <div>
-          {feedData.comments?.map((item, idx) => (
+          {feedData?.comments?.map((item, idx) => (
             <CommentForm key={idx}>
               <Writer>
                 <Avatar src={item.writerAvatar} />
