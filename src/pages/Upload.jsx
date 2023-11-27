@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import Button from 'components/Button';
+import defaultThumb from 'assets/default-thumb.jpeg';
 
 function Upload() {
   const [title, setTitle] = useState('');
@@ -64,7 +65,7 @@ function Upload() {
         content,
         userId,
         createAt: formattedDate,
-        thumbImg: downloadURL,
+        thumbImg: downloadURL ?? defaultThumb,
         author: user.name,
         authorImg: user.avatar,
         like: 0,
@@ -101,7 +102,7 @@ function Upload() {
           required
           maxLength={80}
         />
-        <StFile name="file" type="file" accept="image/*" onChange={handleFileChange} />
+        <StFile name="file" type="file" accept="image/*" onChange={handleFileChange} required />
         <Button size="large" color="yellow">
           업로드
         </Button>
