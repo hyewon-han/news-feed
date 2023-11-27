@@ -87,7 +87,7 @@ function Detail() {
         {
           comment,
           writer: user.name,
-          writerMbti: user.mbti,
+          writerMbti: user?.mbti ?? null,
           writerAvatar: user.avatar,
           writerId: user.userId,
           commentId,
