@@ -5,22 +5,29 @@ import styled from 'styled-components';
 import defaultThumb from 'assets/default-thumb.jpeg';
 import theme from 'styles/Theme';
 import { auth, db } from 'firebase.js';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
+import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
 import DeleteUpdate from 'components/DeleteUpdate';
 import Button from 'components/Button';
 import LikeFeed from 'components/LikeFeed';
 import { v4 as uuidv4 } from 'uuid';
 import { onAuthStateChanged } from 'firebase/auth';
+import { snapshotFeeds } from 'redux/modules/feeds';
 
 function Detail() {
   const { id } = useParams();
-  const [feed, setFeed] = useState('');
+  const [feed, setFeed] = useState([]);
   const [user, setUser] = useState('');
   const [comment, setComment] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const userId = useSelector((state) => state.user);
   const commentId = uuidv4();
+
+  const dispatch = useDispatch();
+  const feeds = useSelector((state) => state.feeds);
+  const feedData = feeds.find((item) => item.feedId === id);
+  console.log(feedData);
+  console.log(feedData.comments);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -28,7 +35,7 @@ function Detail() {
       setCurrentUser(user);
     });
   }, []);
-
+  // console.log('hello');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,7 +58,18 @@ function Detail() {
       }
     };
     fetchData();
-  }, [feed]);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'feeds'), (querySnapshot) => {
+      let updatedFeeds = [];
+      querySnapshot.forEach((doc) => {
+        updatedFeeds.push({ id: doc.id, ...doc.data() });
+      });
+      dispatch(snapshotFeeds(updatedFeeds));
+    });
+    return () => unsubscribe(); // cleanup 함수로 리스너 해제(컴포 언마운트 될때!!)
+  }, []);
 
   const formattedDate = new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'full',
@@ -60,7 +78,7 @@ function Detail() {
 
   const createComment = async (e) => {
     e.preventDefault();
-    const feedsRef = doc(db, 'feeds', feed.id);
+    const feedsRef = doc(db, 'feeds', feedData.id);
     await updateDoc(feedsRef, {
       comments: [
         ...feed.comments,
@@ -94,18 +112,18 @@ function Detail() {
     <Feed>
       <Header>
         <Writer>
-          <Avatar src={feed.authorImg} />
-          <span>{feed.author}</span>
+          <Avatar src={feedData.authorImg} />
+          <span>{feedData.author}</span>
         </Writer>
-        <p>{feed.title}</p>
+        <p>{feedData.title}</p>
         <div>
           <LikeFeed feed={feed} />
         </div>
       </Header>
-      <Thumbnail src={feed.thumbImg ?? defaultThumb} alt="이미지없음" />
-      <StSpan>{feed.createAt}</StSpan>
+      <Thumbnail src={feedData.thumbImg ?? defaultThumb} alt="이미지없음" />
+      <StSpan>{feedData.createAt}</StSpan>
       <DeleteUpdate feed={feed} userId={userId} />
-      <StTextarea value={feed.content} disabled />
+      <StTextarea value={feedData.content} disabled />
       <div>
         {currentUser ? (
           <CommentForm>
@@ -125,7 +143,7 @@ function Detail() {
         ) : null}
 
         <div>
-          {feed.comments?.map((item, idx) => (
+          {feedData.comments?.map((item, idx) => (
             <CommentForm key={idx}>
               <Writer>
                 <Avatar src={item.writerAvatar} />
