@@ -110,18 +110,18 @@ function Detail() {
     <Feed>
       <Header>
         <Writer>
-          <Avatar src={feedData.authorImg} />
-          <span>{feedData.author}</span>
+          <Avatar src={feedData?.authorImg} />
+          <span>{feedData?.author}</span>
         </Writer>
-        <p>{feedData.title}</p>
+        <p>{feedData?.title}</p>
         <div>
           <LikeFeed feed={feed} />
         </div>
       </Header>
       <Thumbnail src={feedData.thumbImg ?? defaultThumb} alt="이미지없음" />
-      <StSpan>{feedData.createAt}</StSpan>
+      <StSpan>{feedData?.createAt}</StSpan>
       <DeleteUpdate feed={feed} userId={userId} />
-      <StTextarea value={feedData.content} disabled />
+      <StTextarea value={feedData?.content} disabled />
       <div>
         {currentUser ? (
           <CommentForm>
