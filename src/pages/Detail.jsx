@@ -26,8 +26,6 @@ function Detail() {
   const dispatch = useDispatch();
   const feeds = useSelector((state) => state.feeds);
   const feedData = feeds.find((item) => item.feedId === id);
-  console.log(feedData);
-  console.log(feedData.comments);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -35,7 +33,7 @@ function Detail() {
       setCurrentUser(user);
     });
   }, []);
-  // console.log('hello');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
