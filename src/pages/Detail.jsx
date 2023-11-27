@@ -27,6 +27,10 @@ function Detail() {
   const feeds = useSelector((state) => state.feeds);
   const feedData = feeds.find((item) => item.feedId === id);
 
+  // useEffect(() => {
+  //   console.log(feedData);
+  // }, [feedData]);
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log('user', user); // user 정보 없으면 null 표시
@@ -118,7 +122,7 @@ function Detail() {
           <LikeFeed feed={feed} />
         </div>
       </Header>
-      <Thumbnail src={feedData.thumbImg ?? defaultThumb} alt="이미지없음" />
+      <Thumbnail src={feedData?.thumbImg ?? defaultThumb} alt="이미지없음" />
       <StSpan>{feedData?.createAt}</StSpan>
       <DeleteUpdate feed={feed} userId={userId} />
       <StTextarea value={feedData?.content} disabled />
